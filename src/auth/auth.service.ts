@@ -20,7 +20,6 @@ export class AuthService {
                 if (!user) {
                     throw  new UnauthorizedException('Username not match');
                 } else {
-                    console.log(user)
                     return user.comparePassword(password).pipe(
                         map(m => {
                             if (m) {
@@ -43,7 +42,6 @@ export class AuthService {
 
     login(user: UserPrincipal): Observable<AccessToken> {
         const payload: JwtPayload = {...user};
-        console.log(payload);
         return from(this.jwtService.signAsync(payload)).pipe(
             map((access_token) => {
                 return {accessToken: access_token} as AccessToken;

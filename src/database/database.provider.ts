@@ -8,11 +8,10 @@ export const dbProviders = [
     {
         provide: DB_CONNECTION,
         useFactory: (dbConfig: ConfigType<typeof mongodbConfig>): Connection => {
-            const conn = createConnection(dbConfig.uri, {
+            return createConnection(dbConfig.uri, {
                 useNewUrlParser: true,
                 useUnifiedTopology: true
             });
-            return conn;
         },
         inject: [mongodbConfig.KEY]
     },

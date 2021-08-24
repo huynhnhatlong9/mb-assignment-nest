@@ -1,8 +1,9 @@
-import {Body, Controller, Post, Req, Res, UseGuards} from '@nestjs/common';
+import {Body, Controller, HttpStatus, Post, Req, Res, UseGuards} from '@nestjs/common';
 import {AuthService} from "./auth.service";
 import {LocalAuthGuard} from "./guard/local-auth.guard";
 import {Response} from "express";
-import {map, Observable} from "rxjs";
+import {from, map, Observable, of} from "rxjs";
+import {JwtAuthGuard} from "./guard/jwt-auth.guard";
 
 @Controller('auth')
 export class AuthController {
@@ -20,5 +21,11 @@ export class AuthController {
                     .send();
             })
         );
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('/testJwt')
+    testJwt(@Req() req: any, @Res() res: Response): Observable<Response> {
+        return of(res.status(HttpStatus.OK).send(req.user));
     }
 }
