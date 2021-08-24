@@ -1,0 +1,2 @@
+export const DB_CONNECTION = 'DATABASE_CONNECTION'
+export const USER_MODEL = 'USER_MODEL'
