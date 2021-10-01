@@ -1,6 +1,7 @@
 import {Document, Model, Schema, SchemaType, SchemaTypes} from "mongoose";
 import {from, Observable} from "rxjs";
 import {hash, compare} from "bcrypt";
+import {RolesType} from "../../shared/roles-type.enum";
 
 interface User extends Document {
     comparePassword(password: string): Observable<boolean>;
@@ -10,6 +11,7 @@ interface User extends Document {
     readonly password: string;
     readonly firstname: string;
     readonly lastname: string;
+    readonly roles: RolesType[]
 }
 
 type UserModel = Model<User>;
@@ -19,7 +21,10 @@ const UserSchema = new Schema<User>({
     email: SchemaTypes.String,
     password: SchemaTypes.String,
     firstname: SchemaTypes.String,
-    lastname: SchemaTypes.String
+    lastname: SchemaTypes.String,
+    roles: [
+        {type: SchemaTypes.Number, require: false}
+    ]
 }, {
     timestamps: true
 });
