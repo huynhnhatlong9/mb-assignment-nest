@@ -1,5 +1,5 @@
-export enum RolesType{
+export enum RolesType {
     ADMIN,
     CUSTOMER,
-    PROVIDER
+    PROVIDER,
 }

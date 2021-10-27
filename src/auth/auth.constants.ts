@@ -1,1 +1,1 @@
-export const HAS_ROLE = "has-roles"
+export const HAS_ROLE = 'has-roles';

@@ -1,10 +1,10 @@
-import {IsEmail, IsPhoneNumber} from "class-validator";
+import { IsEmail, IsPhoneNumber } from 'class-validator';
 
-export class CreateLectureDto{
+export class CreateLectureDto {
     name: string;
     @IsEmail()
-    email: string
+    email: string;
     @IsPhoneNumber()
-    phone: number
-    subject: string
+    phone: number;
+    subject: string;
 }

@@ -1,6 +1,6 @@
-import {IsEmail, MinLength} from "class-validator";
+import { MinLength } from 'class-validator';
 
-export class LoginDto{
+export class LoginDto {
     @MinLength(4)
     username: string;
 

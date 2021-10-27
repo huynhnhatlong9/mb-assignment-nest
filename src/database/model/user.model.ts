@@ -1,7 +1,7 @@
-import {Document, Model, Schema, SchemaType, SchemaTypes} from "mongoose";
-import {from, Observable} from "rxjs";
-import {hash, compare} from "bcrypt";
-import {RolesType} from "../../shared/roles-type.enum";
+import { Document, Model, Schema, SchemaTypes } from 'mongoose';
+import { from, Observable } from 'rxjs';
+import { compare, hash } from 'bcrypt';
+import { RolesType } from '../../shared/roles-type.enum';
 
 interface User extends Document {
     comparePassword(password: string): Observable<boolean>;
@@ -11,23 +11,24 @@ interface User extends Document {
     readonly password: string;
     readonly firstname: string;
     readonly lastname: string;
-    readonly roles: RolesType[]
+    readonly roles: RolesType[];
 }
 
 type UserModel = Model<User>;
 
-const UserSchema = new Schema<User>({
-    username: SchemaTypes.String,
-    email: SchemaTypes.String,
-    password: SchemaTypes.String,
-    firstname: SchemaTypes.String,
-    lastname: SchemaTypes.String,
-    roles: [
-        {type: SchemaTypes.Number, require: false}
-    ]
-}, {
-    timestamps: true
-});
+const UserSchema = new Schema<User>(
+    {
+        username: SchemaTypes.String,
+        email: SchemaTypes.String,
+        password: SchemaTypes.String,
+        firstname: SchemaTypes.String,
+        lastname: SchemaTypes.String,
+        roles: [{ type: SchemaTypes.Number, require: false }],
+    },
+    {
+        timestamps: true,
+    },
+);
 
 async function preSaveHook(next) {
     // Only run this function if password was modified
@@ -48,9 +49,4 @@ function comparePasswordMethod(password: string): Observable<boolean> {
 
 UserSchema.methods.comparePassword = comparePasswordMethod;
 
-export {
-    User,
-    UserSchema,
-    UserModel,
-    comparePasswordMethod
-};
+export { User, UserSchema, UserModel, comparePasswordMethod };

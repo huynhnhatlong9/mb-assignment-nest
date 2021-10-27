@@ -1,6 +1,6 @@
-import {IsEmail, IsNotEmpty} from "class-validator";
+import { IsEmail, IsNotEmpty } from 'class-validator';
 
-export class UpdateProfileDto{
+export class UpdateProfileDto {
     @IsNotEmpty()
     readonly firstname: string;
     readonly lastname: string;

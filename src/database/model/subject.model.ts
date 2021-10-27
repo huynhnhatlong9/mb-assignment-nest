@@ -1,4 +1,4 @@
-import {Document, Model, Schema, SchemaTypes} from "mongoose";
+import { Document, Model, Schema, SchemaTypes } from 'mongoose';
 
 interface Subject extends Document {
     name: string;
@@ -15,11 +15,7 @@ const SubjectSchema = new Schema<Subject>({
     name: SchemaTypes.String,
     credit: SchemaTypes.Number,
     lession: SchemaTypes.Number,
-    durationPerLession: SchemaTypes.Number
+    durationPerLession: SchemaTypes.Number,
 });
 
-export {
-    SubjectModel,
-    Subject,
-    SubjectSchema
-};
+export { SubjectModel, Subject, SubjectSchema };
