@@ -23,11 +23,15 @@ import { HasRole } from '../auth/guard/has-role.decorator';
 import { RolesType } from '../shared/roles-type.enum';
 import { RolesGuard } from '../auth/guard/roles.guard';
 import { User } from '../database/model/user.model';
+import { Public } from 'src/core/decorators/guards/public.guards.decorator';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { PersonalInformationDto } from './dto/personal-information.dto';
 
+@ApiBearerAuth()
 @Controller({ path: 'user' })
 export class UserController {
-    constructor(private readonly userService: UserService) {}
-
+    constructor(private readonly userService: UserService) { }
+    @Public()
     @Post('/register')
     register(@Body() data: RegisterDto, @Res() res: Response) {
         const { username, email } = data;
@@ -62,12 +66,13 @@ export class UserController {
     }
 
     @Get('/profile')
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @HasRole([RolesType.ADMIN])
+    @UseGuards(RolesGuard)
+    // @HasRole([RolesType.ADMIN])
     profile(
         @Req() req: AuthenticatedRequest,
         @Res() res: Response,
     ): Observable<Response> {
+        console.log(req.user);
         return this.userService.findUserByName(req.user.username).pipe(
             map((user) => {
                 if (user) {
@@ -86,7 +91,6 @@ export class UserController {
     }
 
     @Put('/update')
-    @UseGuards(JwtAuthGuard)
     update(
         @Req() req: AuthenticatedRequest,
         @Res() res: Response,
@@ -102,4 +106,17 @@ export class UserController {
             }),
         );
     }
+    @Get('/personal-information')
+    getPersonalInformation(@Req() req: AuthenticatedRequest) {
+        return this.userService.getPersonalInformation(req.user.username);
+    }
+    @Put('/personal-information')
+    updatePersonalInformation(@Body() personalInfo: PersonalInformationDto, @Req() req: AuthenticatedRequest) {
+        return this.userService.updatePersonalInformation(req.user.username, personalInfo);
+    }
+    @Get('/academic-information')
+    getAcademicInformation(@Req() req: AuthenticatedRequest) {
+        return this.userService.getAcademicInformation(req.user.username);
+    }
+
 }

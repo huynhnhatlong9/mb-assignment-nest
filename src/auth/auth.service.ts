@@ -48,7 +48,13 @@ export class AuthService {
         const payload: JwtPayload = { ...user };
         return from(this.jwtService.signAsync(payload)).pipe(
             map((access_token) => {
-                return { accessToken: access_token } as AccessToken;
+                return { 
+                    accessToken: access_token,
+                    username:payload.username,
+                    firstname:payload.firstname,
+                    lastname:payload.lastname,
+                    roles:payload.roles
+                 } as AccessToken;
             }),
         );
     }
