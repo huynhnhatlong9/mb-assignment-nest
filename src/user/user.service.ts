@@ -1,23 +1,18 @@
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { User } from '../database/model/user.model';
+import { CustomThrowException } from './../common/exceptions/customThrowException';
 import { CustomResponse } from './../common/models/customresponse';
 import { PersonalInformationDto } from './dto/personal-information.dto';
-import { CustomThrowException } from './../common/exceptions/customThrowException';
-import { PersonalInformationEntity } from './entities/personal-information.entity';
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { USER_MODEL } from '../database/database.constants';
-import { User, UserModel } from '../database/model/user.model';
-import { EMPTY, from, mergeMap, Observable, of, throwIfEmpty } from 'rxjs';
 import { RegisterDto } from './dto/register.dto';
 import { UpdateProfileDto } from './dto/update.dto';
 import { UserRepository } from './repositories/user.repository';
-import { HttpStatus } from '@nestjs/common';
 @Injectable()
 export class UserService {
-    constructor(
-        private userRepository: UserRepository
-    ) { }
+    constructor(private userRepository: UserRepository) { }
 
     findUserByName(username: string): Observable<User> {
-        return this.userRepository.findUserByName(username)
+        return this.userRepository.findUserByName(username);
     }
 
     register(data: RegisterDto): Observable<User> {
@@ -36,42 +31,57 @@ export class UserService {
         return this.userRepository.updateProfile(username, data);
     }
     getPersonalInformation(username: string): Promise<CustomResponse> {
-        return this.userRepository.getPersonalInformation(username)
-            .then(data => {
+        return this.userRepository
+            .getPersonalInformation(username)
+            .then((personInfoResult) => {
                 return new CustomResponse({
                     success: true,
-                    result: data,
-                    statusCode: HttpStatus.OK
-                })
+                    result: personInfoResult,
+                    statusCode: HttpStatus.OK,
+                });
             })
-            .catch((err) => {
-                throw CustomThrowException('connect mongodb failed', HttpStatus.INTERNAL_SERVER_ERROR)
-            })
+            .catch(() => {
+                throw CustomThrowException(
+                    'connect mongodb failed',
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                );
+            });
     }
-    updatePersonalInformation(username: string, infoUpdate: PersonalInformationDto) {
-        return this.userRepository.updatePersonalInformation(username, infoUpdate)
-            .then(data => {
+    updatePersonalInformation(
+        username: string,
+        infoUpdate: PersonalInformationDto,
+    ) {
+        return this.userRepository
+            .updatePersonalInformation(username, infoUpdate)
+            .then(() => {
                 return new CustomResponse({
                     statusCode: HttpStatus.OK,
                     success: true,
-                    result: 'Update successfully'
-                })
+                    result: 'Update successfully',
+                });
             })
-            .catch(err => {
-                throw CustomThrowException('connect mongodb failed', HttpStatus.INTERNAL_SERVER_ERROR)
-            })
+            .catch(() => {
+                throw CustomThrowException(
+                    'connect mongodb failed',
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                );
+            });
     }
     getAcademicInformation(username: string) {
-        return this.userRepository.getAcademicInformation(username)
-            .then(data => {
+        return this.userRepository
+            .getAcademicInformation(username)
+            .then((academicInfoResult) => {
                 return new CustomResponse({
                     statusCode: HttpStatus.OK,
-                    result: data,
-                    success: true
-                })
+                    result: academicInfoResult,
+                    success: true,
+                });
             })
-            .catch(err => {
-                throw CustomThrowException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-            })
+            .catch((err) => {
+                throw CustomThrowException(
+                    err.message,
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                );
+            });
     }
 }

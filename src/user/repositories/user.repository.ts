@@ -46,13 +46,35 @@ export class UserRepository {
             ),
         );
     }
-    getPersonalInformation(username: string): Promise<PersonalInformationEntity> {
-        return this.userModel.findOne({ username: username }, { firstname: 1, lastname: 1, personalinfo: 1 }).exec()
+    getPersonalInformation(
+        username: string,
+    ): Promise<PersonalInformationEntity> {
+        return this.userModel
+            .findOne(
+                { username: username },
+                { firstname: 1, lastname: 1, personalinfo: 1 },
+            )
+            .exec();
     }
-    updatePersonalInformation(username: string, infoUpdate: PersonalInformationDto) {
-        return this.userModel.findOneAndUpdate({ username: username }, { $set: { personalinfo: infoUpdate } }).exec();
+    updatePersonalInformation(
+        username: string,
+        infoUpdate: PersonalInformationDto,
+    ) {
+        return this.userModel
+            .findOneAndUpdate(
+                { username: username },
+                { $set: { personalinfo: infoUpdate } },
+            )
+            .exec();
     }
-    getAcademicInformation(username: string): Promise<AcademicInformationEntity> {
-        return this.userModel.findOne({ username: username }, { firstname: 1, lastname: 1, academicinfo: 1 }).exec();
+    getAcademicInformation(
+        username: string,
+    ): Promise<AcademicInformationEntity> {
+        return this.userModel
+            .findOne(
+                { username: username },
+                { firstname: 1, lastname: 1, academicinfo: 1 },
+            )
+            .exec();
     }
 }

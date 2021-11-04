@@ -11,21 +11,18 @@ import {
     Res,
     UseGuards,
 } from '@nestjs/common';
-import { UserService } from './user.service';
-import { RegisterDto } from './dto/register.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { Response } from 'express';
 import { map, mergeMap, Observable } from 'rxjs';
-import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
-import { AuthenticatedRequest } from '../auth/interface/authenticated-request.interface';
-import { UserProfile } from './interface/user-profile.interface';
-import { UpdateProfileDto } from './dto/update.dto';
-import { HasRole } from '../auth/guard/has-role.decorator';
-import { RolesType } from '../shared/roles-type.enum';
-import { RolesGuard } from '../auth/guard/roles.guard';
-import { User } from '../database/model/user.model';
 import { Public } from 'src/core/decorators/guards/public.guards.decorator';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { RolesGuard } from '../auth/guard/roles.guard';
+import { AuthenticatedRequest } from '../auth/interface/authenticated-request.interface';
+import { User } from '../database/model/user.model';
 import { PersonalInformationDto } from './dto/personal-information.dto';
+import { RegisterDto } from './dto/register.dto';
+import { UpdateProfileDto } from './dto/update.dto';
+import { UserProfile } from './interface/user-profile.interface';
+import { UserService } from './user.service';
 
 @ApiBearerAuth()
 @Controller({ path: 'user' })
@@ -111,12 +108,17 @@ export class UserController {
         return this.userService.getPersonalInformation(req.user.username);
     }
     @Put('/personal-information')
-    updatePersonalInformation(@Body() personalInfo: PersonalInformationDto, @Req() req: AuthenticatedRequest) {
-        return this.userService.updatePersonalInformation(req.user.username, personalInfo);
+    updatePersonalInformation(
+        @Body() personalInfo: PersonalInformationDto,
+        @Req() req: AuthenticatedRequest,
+    ) {
+        return this.userService.updatePersonalInformation(
+            req.user.username,
+            personalInfo,
+        );
     }
     @Get('/academic-information')
     getAcademicInformation(@Req() req: AuthenticatedRequest) {
         return this.userService.getAcademicInformation(req.user.username);
     }
-
 }

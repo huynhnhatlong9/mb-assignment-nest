@@ -1,7 +1,7 @@
 export class AcademicInformationEntity {
     lastname: string;
     firstname: string;
-    academicinfo: Academicinfo
+    academicinfo: Academicinfo;
 }
 class Academicinfo {
     status: string;
