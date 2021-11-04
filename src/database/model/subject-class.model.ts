@@ -24,7 +24,7 @@ const SubjectClassSchema = new Schema<SubjectClass>({
         ref: 'Subject',
     },
     lecturer: {
-        type: SchemaTypes.String,
+        type: SchemaTypes.ObjectId,
         ref: 'Lecturer',
     },
     weekStudy: [SchemaTypes.Number],

@@ -7,6 +7,7 @@ import {
     SUBJECT_MODEL,
     SUBJECT_SCORE_MODEL,
     USER_MODEL,
+    CLASSOFSTUDENT_MODEL
 } from './database.constants';
 import { ConfigType } from '@nestjs/config';
 import mongodbConfig from '../config/mongodb.config';
@@ -101,4 +102,15 @@ export const dbProviders = [
         },
         inject: [DB_CONNECTION],
     },
+    {
+        provide:CLASSOFSTUDENT_MODEL,
+        useFactory: (conn: Connection) => {
+            return conn.model<Semester>(
+                'ClassOfStudent',
+                SemesterSchema,
+                'classOfStudent',
+            );
+        },
+        inject: [DB_CONNECTION],
+    }
 ];
