@@ -1,10 +1,10 @@
-import {Inject, Injectable} from "@nestjs/common";
-import {PassportStrategy} from "@nestjs/passport";
-import {ExtractJwt, Strategy} from "passport-jwt";
-import jwtConfig from "../../config/jwtConfig.config";
-import {ConfigType} from "@nestjs/config";
-import {UserPrincipal} from "../interface/user-principal";
-import {JwtPayload} from "../interface/jwt-payload.interface";
+import { Inject, Injectable } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
+import { ExtractJwt, Strategy } from 'passport-jwt';
+import jwtConfig from '../../config/jwtConfig.config';
+import { ConfigType } from '@nestjs/config';
+import { UserPrincipal } from '../interface/user-principal';
+import { JwtPayload } from '../interface/jwt-payload.interface';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -12,7 +12,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: true,
-            secretOrKey: config.secretKey
+            secretOrKey: config.secretKey,
         });
     }
 
@@ -21,7 +21,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             username: payload.username,
             email: payload.email,
             firstname: payload.firstname,
-            lastname: payload.lastname
+            lastname: payload.lastname,
+            roles: payload.roles,
         } as UserPrincipal;
     }
 }
