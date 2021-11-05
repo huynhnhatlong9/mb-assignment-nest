@@ -7,7 +7,8 @@ import {
     SUBJECT_MODEL,
     SUBJECT_SCORE_MODEL,
     USER_MODEL,
-    CLASSOFSTUDENT_MODEL
+    CLASSOFSTUDENT_MODEL,
+    REGISTERSUBJECT_MODEL,
 } from './database.constants';
 import { ConfigType } from '@nestjs/config';
 import mongodbConfig from '../config/mongodb.config';
@@ -19,7 +20,14 @@ import { SubjectClass, SubjectClassSchema } from './model/subject-class.model';
 import { SubjectScore, SubjectScoreSchema } from './model/subject-score.model';
 import { Schedule, ScheduleSchema } from './model/schedule.model';
 import { Semester, SemesterSchema } from './model/semester.model';
-
+import {
+    ClassOfStudent,
+    classOfStudentSChema,
+} from './model/classofstudent.model';
+import {
+    RegisterSubject,
+    RegisterSubjectSChema,
+} from './model/registersubject.model';
 export const dbProviders = [
     {
         provide: DB_CONNECTION,
@@ -103,14 +111,25 @@ export const dbProviders = [
         inject: [DB_CONNECTION],
     },
     {
-        provide:CLASSOFSTUDENT_MODEL,
+        provide: CLASSOFSTUDENT_MODEL,
         useFactory: (conn: Connection) => {
-            return conn.model<Semester>(
+            return conn.model<ClassOfStudent>(
                 'ClassOfStudent',
-                SemesterSchema,
+                classOfStudentSChema,
                 'classOfStudent',
             );
         },
         inject: [DB_CONNECTION],
-    }
+    },
+    {
+        provide: REGISTERSUBJECT_MODEL,
+        useFactory: (conn: Connection) => {
+            return conn.model<RegisterSubject>(
+                'RegisterSubject',
+                RegisterSubjectSChema,
+                'registerSubject',
+            );
+        },
+        inject: [DB_CONNECTION],
+    },
 ];

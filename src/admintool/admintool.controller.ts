@@ -1,3 +1,5 @@
+import { CreateSemesterDto } from './dto/semester.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import {
     BadRequestException,
     Body,
@@ -11,7 +13,8 @@ import { CreateLectureDto } from './dto/CreateLecture.dto';
 import { catchError, map, Observable } from 'rxjs';
 import { CreateSubjectDto } from './dto/CreateSubject.dto';
 import { Response } from 'express';
-
+import { CreateRegisterSubjectDto } from './dto/createRegisterSubject.dto';
+@ApiBearerAuth()
 @Controller('admintool')
 export class AdminToolController {
     constructor(private readonly adminService: AdminToolService) {}
@@ -50,5 +53,13 @@ export class AdminToolController {
                 throw new BadRequestException();
             }),
         );
+    }
+    @Post('/create-register-subject')
+    createRegisterSubject(@Body() body: CreateRegisterSubjectDto) {
+        return this.adminService.creatRegistSubject(body);
+    }
+    @Post('/create-semester')
+    createSemester(@Body() body: CreateSemesterDto) {
+        return this.adminService.createSemester(body);
     }
 }

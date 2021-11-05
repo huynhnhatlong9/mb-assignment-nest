@@ -23,7 +23,7 @@ async function bootstrap() {
     const userService = app.select(AppModule).get(UserService);
     app.useGlobalFilters(new AllExceptionsFilter());
     // app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
-    app.useGlobalGuards(new JwtAuthGuard(new Reflector(),userService));
+    app.useGlobalGuards(new JwtAuthGuard(new Reflector(), userService));
 
     await app.listen(3007);
 }
