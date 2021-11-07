@@ -17,3 +17,8 @@ export interface IUpdateCart {
     updatedCart?: Cart;
     message?: String;
 }
+
+export interface ICheckout {
+    success: Boolean;
+    message: String;
+}

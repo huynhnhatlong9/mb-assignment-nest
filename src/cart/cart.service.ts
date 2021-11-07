@@ -8,6 +8,8 @@ export class CartService {
     constructor(private cartRepository: CartRepository) {}
 
     async create(createCartDto: CreateCartDto) {
+        if (!(await this.cartRepository.checkUserId(createCartDto.userId)))
+            return Promise.resolve(false);
         return await this.cartRepository.createNewCurriculum(createCartDto);
     }
 
@@ -17,9 +19,31 @@ export class CartService {
 
     async update(id: string, updateCartDto: UpdateCartDto) {
         const updateCartCondition = { _id: id };
+
+        if (
+            !(await this.cartRepository.checkCurriculum(
+                updateCartDto.curriculums,
+            ))
+        )
+            return Promise.resolve(false);
+
         return await this.cartRepository.updateCart(
             updateCartCondition,
             updateCartDto,
         );
+    }
+
+    async Checkout(id: string, updateCartDto: UpdateCartDto) {
+        const updateCartCondition = { _id: id };
+
+        await this.cartRepository.updateQuanlityCurriculum(
+            updateCartDto.curriculums,
+        );
+        await this.cartRepository.updateCart(updateCartCondition, {
+            ...updateCartDto,
+            curriculums: [],
+        });
+
+        return Promise.resolve(true);
     }
 }

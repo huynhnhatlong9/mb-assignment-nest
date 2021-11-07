@@ -9,11 +9,15 @@ import {
     Response,
     HttpStatus,
 } from '@nestjs/common';
-import { INTERNAL_SERVER_ERROR } from 'src/common/constants/status-message.const';
+import {
+    INTERNAL_SERVER_ERROR,
+    INVALID_INPUT,
+} from 'src/common/constants/status-message.const';
 import { CartService } from './cart.service';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
 import {
+    ICheckout,
     ICreateCart,
     IGetOneCart,
     IUpdateCart,
@@ -30,6 +34,13 @@ export class CartController {
     ): Promise<ICreateCart> {
         try {
             const createdCart = await this.cartService.create(createCartDto);
+
+            if (!createdCart) {
+                return res.status(HttpStatus.BAD_REQUEST).json({
+                    success: false,
+                    message: INVALID_INPUT,
+                });
+            }
 
             return res.status(HttpStatus.CREATED).json({
                 success: true,
@@ -80,6 +91,29 @@ export class CartController {
             return res.status(HttpStatus.OK).json({
                 success: true,
                 updatedCart,
+            });
+        } catch (error) {
+            console.log(error);
+
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                success: false,
+                message: INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
+    @Put('checkout/:id')
+    async checkout(
+        @Param('id') id: string,
+        @Body() updateCartDto: UpdateCartDto,
+        @Response() res,
+    ): Promise<ICheckout> {
+        try {
+            await this.cartService.Checkout(id, updateCartDto);
+
+            return res.status(HttpStatus.OK).json({
+                success: true,
+                message: 'Checkout successfuly',
             });
         } catch (error) {
             console.log(error);
