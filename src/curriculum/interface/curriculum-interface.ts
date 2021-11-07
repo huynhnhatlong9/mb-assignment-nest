@@ -5,3 +5,26 @@ export interface ICreateCurrilum {
     createdCurriculum?: Curriculum;
     message?: String;
 }
+
+export interface IGetAllCurriculum {
+    success: Boolean;
+    curriculums?: Curriculum[];
+    message?: String;
+}
+
+export interface IGetOneCurriculum {
+    success: Boolean;
+    foundCurriculum?: Curriculum;
+    message?: String;
+}
+
+export interface IUpdateCurriculum {
+    success: Boolean;
+    updatedCurriculum?: Curriculum;
+    message?: String;
+}
+
+export interface IDeleteCurriculum {
+    success: String;
+    message: String;
+}

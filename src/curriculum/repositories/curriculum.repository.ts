@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { IsNumberOptions } from 'class-validator';
 import { CURRICULUM_MODEL } from 'src/database/database.constants';
 import {
     Curriculum,
@@ -18,5 +19,33 @@ export class CurriculumRepository {
             createCurriculum,
         );
         return createdCurriculum;
+    }
+
+    async getAllCurriculum(page: number, limit: number) {
+        const skipData: number = page > 1 ? (page - 1) * limit - 1 : 0;
+        const curriculums = await this.curriculumModel
+            .find()
+            .skip(skipData)
+            .limit(4);
+        return curriculums;
+    }
+
+    async getCurriculumById(id: string) {
+        return await this.curriculumModel.findById(id);
+    }
+
+    async updateCurriculum(curriculumUpdateCondition, updatedCurriculum) {
+        const curriculum = await this.curriculumModel.findOneAndUpdate(
+            curriculumUpdateCondition,
+            updatedCurriculum,
+            { new: true, useFindAndModify: false },
+        );
+        return curriculum;
+    }
+
+    async deleteCurriculum(curriculumDeleteCondition) {
+        return await this.curriculumModel.findOneAndDelete(
+            curriculumDeleteCondition,
+        );
     }
 }
