@@ -1,5 +1,3 @@
-import { CreateSemesterDto } from './dto/semester.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
 import {
     BadRequestException,
     Body,
@@ -7,17 +5,25 @@ import {
     HttpStatus,
     Post,
     Res,
+    UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { Response } from 'express';
+import { catchError, map, Observable } from 'rxjs';
+import { HasRole } from './../auth/guard/has-role.decorator';
+import { RolesGuard } from './../auth/guard/roles.guard';
+import { RolesType } from './../shared/roles-type.enum';
 import { AdminToolService } from './admintool.service';
 import { CreateLectureDto } from './dto/CreateLecture.dto';
-import { catchError, map, Observable } from 'rxjs';
-import { CreateSubjectDto } from './dto/CreateSubject.dto';
-import { Response } from 'express';
 import { CreateRegisterSubjectDto } from './dto/createRegisterSubject.dto';
+import { CreateSubjectDto } from './dto/CreateSubject.dto';
+import { CreateSemesterDto } from './dto/semester.dto';
 @ApiBearerAuth()
+@UseGuards(RolesGuard)
+@HasRole([RolesType.ADMIN])
 @Controller('admintool')
 export class AdminToolController {
-    constructor(private readonly adminService: AdminToolService) {}
+    constructor(private readonly adminService: AdminToolService) { }
 
     @Post('/create-lecture')
     createLecture(

@@ -9,6 +9,8 @@ import {
     USER_MODEL,
     CLASSOFSTUDENT_MODEL,
     REGISTERSUBJECT_MODEL,
+    CART_MODEL,
+    CURRICULUM_MODEL,
 } from './database.constants';
 import { ConfigType } from '@nestjs/config';
 import mongodbConfig from '../config/mongodb.config';
@@ -28,6 +30,9 @@ import {
     RegisterSubject,
     RegisterSubjectSChema,
 } from './model/registersubject.model';
+import { Curriculum, CurriculumSchema } from './model/curriculum.model';
+import { Cart, CartSchema } from './model/cart.model';
+
 export const dbProviders = [
     {
         provide: DB_CONNECTION,
@@ -129,6 +134,24 @@ export const dbProviders = [
                 RegisterSubjectSChema,
                 'registerSubject',
             );
+        },
+        inject: [DB_CONNECTION],
+    },
+    {
+        provide: CURRICULUM_MODEL,
+        useFactory: (conn: Connection) => {
+            return conn.model<Semester>(
+                'Curriculum',
+                CurriculumSchema,
+                'curriculums',
+            );
+        },
+        inject: [DB_CONNECTION],
+    },
+    {
+        provide: CART_MODEL,
+        useFactory: (conn: Connection) => {
+            return conn.model<Semester>('Cart', CartSchema, 'carts');
         },
         inject: [DB_CONNECTION],
     },

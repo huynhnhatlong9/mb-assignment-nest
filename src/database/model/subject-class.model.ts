@@ -10,6 +10,8 @@ interface SubjectClass extends Document {
     minStudent: number;
     listStudent: Array<number>;
     numOfStudent: number;
+    midExamSchedule: Date;
+    finalExamSchedule: Date;
 }
 
 type SubjectClassModel = Model<SubjectClass>;
@@ -33,6 +35,8 @@ const SubjectClassSchema = new Schema<SubjectClass>({
     minStudent: SchemaTypes.Number,
     listStudent: [SchemaTypes.Number],
     numOfStudent: SchemaTypes.Number,
+    midExamSchedule: SchemaTypes.Date,
+    finalExamSchedule: SchemaTypes.Date,
 });
 
 export { SubjectClass, SubjectClassModel, SubjectClassSchema };

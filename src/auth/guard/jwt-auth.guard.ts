@@ -14,17 +14,17 @@ import { CustomThrowException } from 'src/common/exceptions/customThrowException
 export class JwtAuthGuard extends AuthGuard('jwt') {
     constructor(
         private reflector: Reflector,
-        private userService:UserService
-        ){
+        private userService: UserService,
+    ) {
         super();
     }
     canActivate(
         context: ExecutionContext,
     ): boolean | Promise<boolean> | Observable<boolean> {
-        const isPublic = this.reflector.getAllAndOverride<boolean>(METADATA.IS_PUBLIC, [
-            context.getHandler(),
-            context.getClass()
-        ]);
+        const isPublic = this.reflector.getAllAndOverride<boolean>(
+            METADATA.IS_PUBLIC,
+            [context.getHandler(), context.getClass()],
+        );
 
         if (isPublic) {
             return true;
@@ -36,18 +36,19 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         if (!user || err) {
             throw new UnauthorizedException();
         }
-        this.userService.findUserByName(user.username)
-        .pipe(take(1))
-        .subscribe({
-            next:(userval)=>{
-                // console.log(userval)
-                if (!userval) throw CustomThrowException("User not exits", 400)
-            },
-            error:(err)=>{
-                throw CustomThrowException('Something wrong', 500)
-            }
-        }
-        )
+        this.userService
+            .findUserByName(user.username)
+            .pipe(take(1))
+            .subscribe({
+                next: (userval) => {
+                    // console.log(userval)
+                    if (!userval)
+                        throw CustomThrowException('User not exits', 400);
+                },
+                error: (err) => {
+                    throw CustomThrowException('Something wrong', 500);
+                },
+            });
         return user;
     }
 }

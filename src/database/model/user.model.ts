@@ -12,19 +12,19 @@ interface User extends Document {
     readonly firstname: string;
     readonly lastname: string;
     readonly roles: RolesType[];
-    personalinfo:{
-        idcard:string;
-        phonenumber:string;
-        birthday:Date;
-        address:string
-    },
-    academicinfo:{
-        status:string,
-        faculty:string,
-        brach:string,
-        class:string,
-        rank:string;
-    }
+    personalinfo: {
+        idcard: string;
+        phonenumber: string;
+        birthday: Date;
+        address: string;
+    };
+    academicinfo: {
+        status: string;
+        faculty: string;
+        brach: string;
+        class: string;
+        rank: string;
+    };
 }
 
 type UserModel = Model<User>;
@@ -37,19 +37,19 @@ const UserSchema = new Schema<User>(
         firstname: SchemaTypes.String,
         lastname: SchemaTypes.String,
         roles: [{ type: SchemaTypes.Number, require: false }],
-        personalinfo:{
-            idcard:SchemaTypes.String,
-            phonenumber:SchemaTypes.String,
-            birthday:SchemaTypes.Date,
-            address:SchemaTypes.String
+        personalinfo: {
+            idcard: SchemaTypes.String,
+            phonenumber: SchemaTypes.String,
+            birthday: SchemaTypes.Date,
+            address: SchemaTypes.String,
         },
-        academicinfo:{
-            status:SchemaTypes.String,
-            faculty:SchemaTypes.String,
-            brach:SchemaTypes.String,
-            class:SchemaTypes.String,
-            rank:SchemaTypes.String
-        }
+        academicinfo: {
+            status: SchemaTypes.String,
+            faculty: SchemaTypes.String,
+            brach: SchemaTypes.String,
+            class: SchemaTypes.String,
+            rank: SchemaTypes.String,
+        },
     },
     {
         timestamps: true,

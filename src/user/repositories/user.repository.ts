@@ -1,3 +1,4 @@
+import { AdminRegisterDto } from './../dto/admin-register.dto';
 import { AcademicInformationEntity } from './../entities/academic-information.entity';
 import { PersonalInformationDto } from './../dto/personal-information.dto';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
@@ -76,5 +77,15 @@ export class UserRepository {
                 { firstname: 1, lastname: 1, academicinfo: 1 },
             )
             .exec();
+    }
+    registerAdmin(adminAccout: AdminRegisterDto) {
+        return this.userModel.create(adminAccout);
+    }
+    existByUsernamePromise(username: string): Promise<boolean> {
+        return this.userModel.exists({ username });
+    }
+
+    existByMailPromise(email: string): Promise<boolean> {
+        return this.userModel.exists({ email });
     }
 }

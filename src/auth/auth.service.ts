@@ -11,7 +11,7 @@ export class AuthService {
     constructor(
         private jwtService: JwtService,
         private userService: UserService,
-    ) {}
+    ) { }
 
     validateUser(
         username: string,
@@ -19,6 +19,7 @@ export class AuthService {
     ): Observable<UserPrincipal> {
         return this.userService.findUserByName(username).pipe(
             mergeMap((user) => {
+                console.log(user);
                 if (!user) {
                     throw new UnauthorizedException('Username not match');
                 } else {
@@ -48,13 +49,13 @@ export class AuthService {
         const payload: JwtPayload = { ...user };
         return from(this.jwtService.signAsync(payload)).pipe(
             map((access_token) => {
-                return { 
+                return {
                     accessToken: access_token,
-                    username:payload.username,
-                    firstname:payload.firstname,
-                    lastname:payload.lastname,
-                    roles:payload.roles
-                 } as AccessToken;
+                    username: payload.username,
+                    firstname: payload.firstname,
+                    lastname: payload.lastname,
+                    roles: payload.roles,
+                } as AccessToken;
             }),
         );
     }
