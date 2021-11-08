@@ -34,7 +34,10 @@ export class CurriculumRepository {
         return await this.curriculumModel.findById(id);
     }
 
-    async updateCurriculum(curriculumUpdateCondition, updatedCurriculum) {
+    async updateCurriculum(
+        curriculumUpdateCondition: { _id: string },
+        updatedCurriculum: UpdateCurriculumDto,
+    ) {
         const curriculum = await this.curriculumModel.findOneAndUpdate(
             curriculumUpdateCondition,
             updatedCurriculum,
@@ -43,7 +46,7 @@ export class CurriculumRepository {
         return curriculum;
     }
 
-    async deleteCurriculum(curriculumDeleteCondition) {
+    async deleteCurriculum(curriculumDeleteCondition: { _id: string }) {
         return await this.curriculumModel.findOneAndDelete(
             curriculumDeleteCondition,
         );

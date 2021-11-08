@@ -22,10 +22,7 @@ const QuestionSchema = new Schema({
         require: true,
     },
 
-    file: {
-        type: String,
-        require: true,
-    },
+    file: String,
 });
 
 export { Question, QuestionModel, QuestionSchema };
