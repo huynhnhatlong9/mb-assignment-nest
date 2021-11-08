@@ -10,6 +10,8 @@ import { AdmintoolModule } from './admintool/admintool.module';
 import { CurriculumModule } from './curriculum/curriculum.module';
 import { CartModule } from './cart/cart.module';
 import { MailModule } from './mailmodule/mailmodule.module';
+import { QuestionModule } from './question/question.module';
+
 @Module({
     imports: [
         MongooseModule.forRoot(
@@ -25,6 +27,7 @@ import { MailModule } from './mailmodule/mailmodule.module';
         CurriculumModule,
         CartModule,
         MailModule,
+        QuestionModule,
     ],
     controllers: [AppController],
     providers: [AppService],

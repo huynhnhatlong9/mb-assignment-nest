@@ -39,6 +39,10 @@ export class CartRepository {
         return Promise.resolve(true);
     }
 
+    async getCartByUserId(userId: string) {
+        return await this.cartModel.findOne({ userId: userId });
+    }
+
     async getCartById(id: string) {
         return await this.cartModel.findById(id);
     }
@@ -62,6 +66,7 @@ export class CartRepository {
             await this.curriculumModel.findOneAndUpdate(
                 { _id: curriculumId },
                 { quanlity: foundCurriculum.quanlity - 1 },
+                { new: true, useFindAndModify: false },
             );
         }
         return Promise.resolve(true);
