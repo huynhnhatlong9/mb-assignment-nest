@@ -17,19 +17,23 @@ export class CurriculumService {
         return status === 'STOCKING' || status === 'SOLDOUT';
     }
 
-    findAll() {
-        return `This action returns all curriculum`;
+    async findAll(page: number, limit: number) {
+        return await this.curriculumRepository.getAllCurriculum(page, limit);
     }
 
-    findOne(id: number) {
-        return `This action returns a #${id} curriculum`;
+    async findOne(id: string) {
+        return await this.curriculumRepository.getCurriculumById(id);
     }
 
-    update(id: number, updateCurriculumDto: UpdateCurriculumDto) {
-        return `This action updates a #${id} curriculum`;
+    async update(id: string, updateCurriculumDto: UpdateCurriculumDto) {
+        const updateCurriculumCondition = { _id: id };
+        return await this.curriculumRepository.updateCurriculum(
+            updateCurriculumCondition,
+            updateCurriculumDto,
+        );
     }
 
-    remove(id: number) {
-        return `This action removes a #${id} curriculum`;
+    async remove(id: string) {
+        return await this.curriculumRepository.deleteCurriculum(id);
     }
 }

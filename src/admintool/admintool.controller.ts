@@ -1,7 +1,9 @@
+import { CreateClassDto } from './dto/createClass.dto';
 import {
     BadRequestException,
     Body,
     Controller,
+    Get,
     HttpStatus,
     Post,
     Res,
@@ -67,5 +69,14 @@ export class AdminToolController {
     @Post('/create-semester')
     createSemester(@Body() body: CreateSemesterDto) {
         return this.adminService.createSemester(body);
+    }
+    @Post('/create-class')
+    createClass(@Body() body: CreateClassDto) {
+        return this.adminService.createClass(body);
+    }
+
+    @Get('/semester')
+    findAllSemester() {
+        return this.adminService.findAllSemester();
     }
 }

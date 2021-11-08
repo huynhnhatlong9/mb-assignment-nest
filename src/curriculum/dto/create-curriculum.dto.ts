@@ -13,6 +13,8 @@ export class CreateCurriculumDto {
     @IsDefined()
     author: string;
 
+    quanlity?: number;
+
     image?: string;
 
     status?: string;

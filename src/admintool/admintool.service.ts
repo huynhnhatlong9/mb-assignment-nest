@@ -1,3 +1,4 @@
+import { CreateClassDto } from './dto/createClass.dto';
 import { SEMESTER_MODEL } from './../database/database.constants';
 import { CreateRegisterSubjectDto } from './dto/createRegisterSubject.dto';
 import { Inject, Injectable, HttpStatus } from '@nestjs/common';
@@ -5,6 +6,7 @@ import {
     LECTURER_MODEL,
     SUBJECT_MODEL,
     REGISTERSUBJECT_MODEL,
+    SUBJECT_CLASS_MODEL,
 } from '../database/database.constants';
 import { LecturerModel } from '../database/model/lecturer.model';
 import { Subject, SubjectModel } from '../database/model/subject.model';
@@ -16,6 +18,7 @@ import { CustomResponse } from 'src/common/models/customresponse';
 import { CustomThrowException } from 'src/common/exceptions/customThrowException';
 import { SemesterModel } from 'src/database/model/semester.model';
 import { CreateSemesterDto } from './dto/semester.dto';
+import { SubjectClassModel } from 'src/database/model/subject-class.model';
 @Injectable()
 export class AdminToolService {
     constructor(
@@ -24,6 +27,8 @@ export class AdminToolService {
         @Inject(REGISTERSUBJECT_MODEL)
         private registerModel: RegisterSubjectModel,
         @Inject(SEMESTER_MODEL) private semesterModel: SemesterModel,
+        @Inject(SUBJECT_CLASS_MODEL)
+        private subjectClassModel: SubjectClassModel,
     ) { }
 
     createLecture(lecture: CreateLectureDto): Observable<any> {
@@ -72,9 +77,51 @@ export class AdminToolService {
                     },
                 });
             })
-            .catch(() => {
+            .catch((err) => {
+                console.log(err);
                 throw CustomThrowException(
                     'Create register subject failed',
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                );
+            });
+    }
+    findAllSemester() {
+        this.semesterModel
+            .find({ _id: '618880a3e65ed347f4f26b0e' })
+            .exec()
+            .then((listSemester) => {
+                return new CustomResponse({
+                    success: true,
+                    statusCode: HttpStatus.OK,
+                    result: {
+                        data: listSemester,
+                        message: 'Get all semester successfully',
+                    },
+                });
+            })
+            .catch(() => {
+                throw CustomThrowException(
+                    'find all semesters failed',
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                );
+            });
+    }
+    createClass(classSubject: CreateClassDto) {
+        return this.subjectClassModel
+            .create(classSubject)
+            .then((classResult) => {
+                return new CustomResponse({
+                    success: true,
+                    statusCode: HttpStatus.OK,
+                    result: {
+                        data: classResult,
+                        message: 'Get all semester successfully',
+                    },
+                });
+            })
+            .catch(() => {
+                throw CustomThrowException(
+                    'Create class of subject subject failed',
                     HttpStatus.INTERNAL_SERVER_ERROR,
                 );
             });

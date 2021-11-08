@@ -5,6 +5,8 @@ import { AppModule } from './app.module';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AllExceptionsFilter } from './common/exceptions/allExceptionsFilter ';
+import { join } from 'path';
+import * as express from 'express';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -24,6 +26,9 @@ async function bootstrap() {
     app.useGlobalFilters(new AllExceptionsFilter());
     // app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
     app.useGlobalGuards(new JwtAuthGuard(new Reflector(), userService));
+
+    app.enableCors();
+    app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
 
     await app.listen(3007);
 }
