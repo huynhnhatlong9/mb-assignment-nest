@@ -16,17 +16,17 @@ const classOfStudentSChema = new Schema<ClassOfStudent>({
             ref: 'SubjectClass',
         },
     ],
-    listRegister: [
-        {
-            register: {
-                type: SchemaTypes.ObjectId,
-                ref: 'RegisterSubject',
-            },
-            class: {
-                type: SchemaTypes.ObjectId,
-                ref: 'SubjectClass',
-            },
-        },
-    ],
+    // listRegister: [
+    //     {
+    //         register: {
+    //             type: SchemaTypes.ObjectId,
+    //             ref: 'RegisterSubject',
+    //         },
+    //         class: {
+    //             type: SchemaTypes.ObjectId,
+    //             ref: 'SubjectClass',
+    //         },
+    //     },
+    // ],
 });
 export { ClassOfStudent, ClassOfStudentModel, classOfStudentSChema };

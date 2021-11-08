@@ -9,7 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AdmintoolModule } from './admintool/admintool.module';
 import { CurriculumModule } from './curriculum/curriculum.module';
 import { CartModule } from './cart/cart.module';
-
+import { MailModule } from './mailmodule/mailmodule.module';
 @Module({
     imports: [
         MongooseModule.forRoot(
@@ -24,6 +24,7 @@ import { CartModule } from './cart/cart.module';
         AdmintoolModule,
         CurriculumModule,
         CartModule,
+        MailModule,
     ],
     controllers: [AppController],
     providers: [AppService],

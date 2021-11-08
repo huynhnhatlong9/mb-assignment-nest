@@ -1,4 +1,3 @@
-import { CreateClassDto } from './dto/createClass.dto';
 import {
     BadRequestException,
     Body,
@@ -7,7 +6,7 @@ import {
     HttpStatus,
     Post,
     Res,
-    UseGuards,
+    UseGuards
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -16,8 +15,8 @@ import { HasRole } from './../auth/guard/has-role.decorator';
 import { RolesGuard } from './../auth/guard/roles.guard';
 import { RolesType } from './../shared/roles-type.enum';
 import { AdminToolService } from './admintool.service';
+import { CreateClassDto } from './dto/createClass.dto';
 import { CreateLectureDto } from './dto/CreateLecture.dto';
-import { CreateRegisterSubjectDto } from './dto/createRegisterSubject.dto';
 import { CreateSubjectDto } from './dto/CreateSubject.dto';
 import { CreateSemesterDto } from './dto/semester.dto';
 @ApiBearerAuth()
@@ -62,10 +61,10 @@ export class AdminToolController {
             }),
         );
     }
-    @Post('/create-register-subject')
-    createRegisterSubject(@Body() body: CreateRegisterSubjectDto) {
-        return this.adminService.creatRegistSubject(body);
-    }
+    // @Post('/create-register-subject')
+    // createRegisterSubject(@Body() body: CreateRegisterSubjectDto) {
+    //     return this.adminService.creatRegistSubject(body);
+    // }
     @Post('/create-semester')
     createSemester(@Body() body: CreateSemesterDto) {
         return this.adminService.createSemester(body);
