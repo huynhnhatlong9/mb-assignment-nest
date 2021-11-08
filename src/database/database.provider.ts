@@ -8,6 +8,7 @@ import {
     SUBJECT_SCORE_MODEL,
     USER_MODEL,
     CLASSOFSTUDENT_MODEL,
+    REGISTERSUBJECT_MODEL,
     CART_MODEL,
     CURRICULUM_MODEL,
     QUESTION_MODEL,
@@ -22,6 +23,14 @@ import { SubjectClass, SubjectClassSchema } from './model/subject-class.model';
 import { SubjectScore, SubjectScoreSchema } from './model/subject-score.model';
 import { Schedule, ScheduleSchema } from './model/schedule.model';
 import { Semester, SemesterSchema } from './model/semester.model';
+import {
+    ClassOfStudent,
+    classOfStudentSChema,
+} from './model/classofstudent.model';
+import {
+    RegisterSubject,
+    RegisterSubjectSChema,
+} from './model/registersubject.model';
 import { Curriculum, CurriculumSchema } from './model/curriculum.model';
 import { Cart, CartSchema } from './model/cart.model';
 import { Question, QuestionSchema } from './model/question';
@@ -111,10 +120,21 @@ export const dbProviders = [
     {
         provide: CLASSOFSTUDENT_MODEL,
         useFactory: (conn: Connection) => {
-            return conn.model<Semester>(
+            return conn.model<ClassOfStudent>(
                 'ClassOfStudent',
-                SemesterSchema,
+                classOfStudentSChema,
                 'classOfStudent',
+            );
+        },
+        inject: [DB_CONNECTION],
+    },
+    {
+        provide: REGISTERSUBJECT_MODEL,
+        useFactory: (conn: Connection) => {
+            return conn.model<RegisterSubject>(
+                'RegisterSubject',
+                RegisterSubjectSChema,
+                'registerSubject',
             );
         },
         inject: [DB_CONNECTION],

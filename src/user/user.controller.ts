@@ -1,3 +1,4 @@
+import { AdminRegisterDto } from './dto/admin-register.dto';
 import {
     Body,
     ConflictException,
@@ -23,6 +24,7 @@ import { RegisterDto } from './dto/register.dto';
 import { UpdateProfileDto } from './dto/update.dto';
 import { UserProfile } from './interface/user-profile.interface';
 import { UserService } from './user.service';
+import { RolesType } from 'src/shared/roles-type.enum';
 
 @ApiBearerAuth()
 @Controller({ path: 'user' })
@@ -39,6 +41,7 @@ export class UserController {
                         `Username: ${username} is exist!`,
                     );
                 } else {
+                    data.roles = [RolesType.CUSTOMER];
                     return this.userService.existByMail(email).pipe(
                         mergeMap((isEmailExist) => {
                             if (isEmailExist) {
@@ -120,5 +123,10 @@ export class UserController {
     @Get('/academic-information')
     getAcademicInformation(@Req() req: AuthenticatedRequest) {
         return this.userService.getAcademicInformation(req.user.username);
+    }
+    @Public()
+    @Post('/admin-register')
+    registerAdmin(@Body() body: AdminRegisterDto) {
+        return this.userService.registerAdmin(body);
     }
 }
