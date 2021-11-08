@@ -1,13 +1,12 @@
 import {
+    Body,
     Controller,
     Get,
-    Post,
-    Body,
-    Put,
-    Param,
-    Delete,
-    Response,
     HttpStatus,
+    Param,
+    Post,
+    Put,
+    Response,
 } from '@nestjs/common';
 import {
     INTERNAL_SERVER_ERROR,
@@ -63,6 +62,27 @@ export class CartController {
     ): Promise<IGetOneCart> {
         try {
             const foundCart = await this.cartService.findOne(id);
+            return res.status(HttpStatus.OK).json({
+                success: true,
+                foundCart,
+            });
+        } catch (error) {
+            console.log(error);
+
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                success: false,
+                message: INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
+    @Get('user/:id')
+    async findCartByUserId(
+        @Param('id') id: string,
+        @Response() res,
+    ): Promise<IGetOneCart> {
+        try {
+            const foundCart = await this.cartService.findByUserId(id);
             return res.status(HttpStatus.OK).json({
                 success: true,
                 foundCart,

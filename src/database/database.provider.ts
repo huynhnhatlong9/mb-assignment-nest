@@ -10,6 +10,7 @@ import {
     CLASSOFSTUDENT_MODEL,
     CART_MODEL,
     CURRICULUM_MODEL,
+    QUESTION_MODEL,
 } from './database.constants';
 import { ConfigType } from '@nestjs/config';
 import mongodbConfig from '../config/mongodb.config';
@@ -23,6 +24,7 @@ import { Schedule, ScheduleSchema } from './model/schedule.model';
 import { Semester, SemesterSchema } from './model/semester.model';
 import { Curriculum, CurriculumSchema } from './model/curriculum.model';
 import { Cart, CartSchema } from './model/cart.model';
+import { Question, QuestionSchema } from './model/question';
 
 export const dbProviders = [
     {
@@ -120,7 +122,7 @@ export const dbProviders = [
     {
         provide: CURRICULUM_MODEL,
         useFactory: (conn: Connection) => {
-            return conn.model<Semester>(
+            return conn.model<Curriculum>(
                 'Curriculum',
                 CurriculumSchema,
                 'curriculums',
@@ -131,7 +133,18 @@ export const dbProviders = [
     {
         provide: CART_MODEL,
         useFactory: (conn: Connection) => {
-            return conn.model<Semester>('Cart', CartSchema, 'carts');
+            return conn.model<Cart>('Cart', CartSchema, 'carts');
+        },
+        inject: [DB_CONNECTION],
+    },
+    {
+        provide: QUESTION_MODEL,
+        useFactory: (conn: Connection) => {
+            return conn.model<Question>(
+                'Question',
+                QuestionSchema,
+                'questions',
+            );
         },
         inject: [DB_CONNECTION],
     },

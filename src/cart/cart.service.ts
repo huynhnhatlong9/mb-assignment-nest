@@ -17,6 +17,10 @@ export class CartService {
         return await this.cartRepository.getCartById(id);
     }
 
+    async findByUserId(userId: string) {
+        return await this.cartRepository.getCartByUserId(userId);
+    }
+
     async update(id: string, updateCartDto: UpdateCartDto) {
         const updateCartCondition = { _id: id };
 
@@ -39,6 +43,7 @@ export class CartService {
         await this.cartRepository.updateQuanlityCurriculum(
             updateCartDto.curriculums,
         );
+
         await this.cartRepository.updateCart(updateCartCondition, {
             ...updateCartDto,
             curriculums: [],
