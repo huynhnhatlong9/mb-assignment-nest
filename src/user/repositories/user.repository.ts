@@ -207,6 +207,22 @@ export class UserRepository {
         return this.subjectClassModel.find({}).exec();
     }
     getOpenRegisterClass() {
-        return this.subjectClassModel.find({ status: 1 }).exec();
+        return this.subjectClassModel
+            .aggregate([
+                {
+                    $lookup: {
+                        from: 'subjects',
+                        localField: 'subject',
+                        foreignField: '_id',
+                        as: 'subjectDetail',
+                    },
+                },
+                {
+                    $match: {
+                        status: 1,
+                    },
+                },
+            ])
+            .exec();
     }
 }
