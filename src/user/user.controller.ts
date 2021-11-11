@@ -1,3 +1,4 @@
+import { ExamScheduleDto } from './dto/exam-schedule.dto';
 import { AdminRegisterDto } from './dto/admin-register.dto';
 import {
     Body,
@@ -133,14 +134,28 @@ export class UserController {
     getAllSemester() {
         return this.userService.findAllSemester();
     }
-    @Public()
-    @Get('/exam-schedule')
-    getExamSchedule(@Req() req: AuthenticatedRequest) {
-        return this.userService.getExamSchedule(req.user.username);
+    @Post('/exam-schedule')
+    getExamSchedule(
+        @Body() semester: ExamScheduleDto,
+        @Req() req: AuthenticatedRequest,
+    ) {
+        return this.userService.getExamSchedule(
+            req.user.username,
+            semester.semester,
+        );
     }
     @Public()
     @Get('/all-subject')
     getAllSubject() {
         return this.userService.getAllSubject();
+    }
+    @Public()
+    @Get('/all-class')
+    getAllClass() {
+        return this.userService.getAllClass();
+    }
+    @Get('/open-register-classes')
+    getOpenRegisterClass() {
+        return this.userService.getOpenRegisterClass();
     }
 }

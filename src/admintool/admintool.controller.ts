@@ -66,15 +66,17 @@ export class AdminToolController {
     // createRegisterSubject(@Body() body: CreateRegisterSubjectDto) {
     //     return this.adminService.creatRegistSubject(body);
     // }
+    @Public()
     @Post('/create-semester')
     createSemester(@Body() body: CreateSemesterDto) {
         return this.adminService.createSemester(body);
     }
+    @Public()
     @Post('/create-class')
     createClass(@Body() body: CreateClassDto) {
         return this.adminService.createClass(body);
     }
-
+    @Public()
     @Get('/semester')
     findAllSemester() {
         return this.adminService.findAllSemester();

@@ -1,9 +1,10 @@
 import { statusClassEnum } from './../../common/enums/statusClass.enum';
 import { weekdayEnum } from './../../common/enums/weekday.enum';
 import { Document, Model, Schema, SchemaTypes } from 'mongoose';
+import { AnyCatcher } from 'rxjs/internal/AnyCatcher';
 
 interface SubjectClass extends Document {
-    semester: string;
+    semester: any;
     subject: any;
     lecturer: any;
     weekStudy: Array<number>;
@@ -14,8 +15,8 @@ interface SubjectClass extends Document {
     minStudent: number;
     listStudent: Array<number>;
     numOfStudent: number;
-    midExamSchedule: Date;
-    finalExamSchedule: Date;
+    midExamSchedule: any;
+    finalExamSchedule: any;
     status: statusClassEnum;
 }
 
@@ -23,11 +24,11 @@ type SubjectClassModel = Model<SubjectClass>;
 
 const SubjectClassSchema = new Schema<SubjectClass>({
     semester: {
-        type: SchemaTypes.String,
+        type: SchemaTypes.ObjectId,
         ref: 'Semester',
     },
     subject: {
-        type: SchemaTypes.String,
+        type: SchemaTypes.ObjectId,
         ref: 'Subject',
     },
     lecturer: {
@@ -42,8 +43,14 @@ const SubjectClassSchema = new Schema<SubjectClass>({
     minStudent: SchemaTypes.Number,
     listStudent: [SchemaTypes.Number],
     numOfStudent: SchemaTypes.Number,
-    midExamSchedule: SchemaTypes.Date,
-    finalExamSchedule: SchemaTypes.Date,
+    midExamSchedule: {
+        time: SchemaTypes.Date,
+        address: SchemaTypes.String,
+    },
+    finalExamSchedule: {
+        time: SchemaTypes.Date,
+        address: SchemaTypes.String,
+    },
     status: SchemaTypes.Number,
 });
 

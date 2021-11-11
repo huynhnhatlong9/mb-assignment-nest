@@ -142,9 +142,9 @@ export class UserService {
                 );
             });
     }
-    getExamSchedule(username: string) {
+    getExamSchedule(username: string, semester: string) {
         return this.userRepository
-            .getExamSchedule(username)
+            .getExamSchedule(username, semester)
             .then((result) => {
                 return new CustomResponse({
                     success: true,
@@ -163,6 +163,63 @@ export class UserService {
             });
     }
     getAllSubject() {
-        return this.userRepository.getAllSubject();
+        return this.userRepository
+            .getAllSubject()
+            .then((result) => {
+                return new CustomResponse({
+                    success: true,
+                    statusCode: HttpStatus.OK,
+                    result: {
+                        data: result,
+                        message: 'Get all subject successfully',
+                    },
+                });
+            })
+            .catch((err) => {
+                throw CustomThrowException(
+                    err.message,
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                );
+            });
+    }
+    getAllClass() {
+        return this.userRepository
+            .getAllClass()
+            .then((result) => {
+                return new CustomResponse({
+                    success: true,
+                    statusCode: HttpStatus.OK,
+                    result: {
+                        data: result,
+                        message: 'Get all class successfully',
+                    },
+                });
+            })
+            .catch((err) => {
+                throw CustomThrowException(
+                    err.message,
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                );
+            });
+    }
+    getOpenRegisterClass() {
+        return this.userRepository
+            .getOpenRegisterClass()
+            .then((result) => {
+                return new CustomResponse({
+                    success: true,
+                    statusCode: HttpStatus.OK,
+                    result: {
+                        data: result,
+                        message: 'Get opend register class successfully',
+                    },
+                });
+            })
+            .catch((err) => {
+                throw CustomThrowException(
+                    err.message,
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                );
+            });
     }
 }
