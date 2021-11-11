@@ -1,3 +1,9 @@
+import {
+    SEMESTER_MODEL,
+    CLASSOFSTUDENT_MODEL,
+    SUBJECT_MODEL
+} from './../../database/database.constants';
+import { SemesterModel } from 'src/database/model/semester.model';
 import { AdminRegisterDto } from './../dto/admin-register.dto';
 import { AcademicInformationEntity } from './../entities/academic-information.entity';
 import { PersonalInformationDto } from './../dto/personal-information.dto';
@@ -8,9 +14,17 @@ import { EMPTY, from, mergeMap, Observable, of, throwIfEmpty } from 'rxjs';
 import { RegisterDto } from '../dto/register.dto';
 import { UpdateProfileDto } from '../dto/update.dto';
 import { PersonalInformationEntity } from '../entities/personal-information.entity';
+import { ClassOfStudentModel } from 'src/database/model/classofstudent.model';
+import { SubjectModel } from 'src/database/model/subject.model';
 @Injectable()
 export class UserRepository {
-    constructor(@Inject(USER_MODEL) private userModel: UserModel) { }
+    constructor(
+        @Inject(USER_MODEL) private userModel: UserModel,
+        @Inject(SEMESTER_MODEL) private semesterModel: SemesterModel,
+        @Inject(CLASSOFSTUDENT_MODEL)
+        private classOfStudentModel: ClassOfStudentModel,
+        @Inject(SUBJECT_MODEL) private subjectModel: SubjectModel,
+    ) { }
 
     findUserByName(username: string): Observable<User> {
         return from(this.userModel.findOne({ username: username }).exec());
@@ -87,5 +101,20 @@ export class UserRepository {
 
     existByMailPromise(email: string): Promise<boolean> {
         return this.userModel.exists({ email });
+    }
+    getAllSemester() {
+        return this.semesterModel.find().exec();
+    }
+    async getExamSchedule(username: string) {
+        const resultId = (await this.findUserIdByNamePromise(username)) as any;
+        return this.classOfStudentModel.find({ studentId: resultId._id });
+    }
+    findUserIdByNamePromise(username: string) {
+        return this.userModel
+            .findOne({ username: username }, { _id: 1 })
+            .exec();
+    }
+    getAllSubject() {
+        return this.subjectModel.find({}).exec();
     }
 }

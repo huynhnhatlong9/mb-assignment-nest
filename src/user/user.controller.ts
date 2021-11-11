@@ -129,4 +129,18 @@ export class UserController {
     registerAdmin(@Body() body: AdminRegisterDto) {
         return this.userService.registerAdmin(body);
     }
+    @Get('/all-semester')
+    getAllSemester() {
+        return this.userService.findAllSemester();
+    }
+    @Public()
+    @Get('/exam-schedule')
+    getExamSchedule(@Req() req: AuthenticatedRequest) {
+        return this.userService.getExamSchedule(req.user.username);
+    }
+    @Public()
+    @Get('/all-subject')
+    getAllSubject() {
+        return this.userService.getAllSubject();
+    }
 }

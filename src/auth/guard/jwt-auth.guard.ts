@@ -1,15 +1,14 @@
 import {
     ExecutionContext,
     Injectable,
-    UnauthorizedException,
+    UnauthorizedException
 } from '@nestjs/common';
-import { Observable, pipe, take } from 'rxjs';
-import { AuthGuard } from '@nestjs/passport';
 import { Reflector } from '@nestjs/core';
+import { AuthGuard } from '@nestjs/passport';
+import { Observable, take } from 'rxjs';
 import { METADATA } from 'src/common/constants/api-metadata.const';
-import { UserService } from 'src/user/user.service';
-import { User } from 'src/database/model/user.model';
 import { CustomThrowException } from 'src/common/exceptions/customThrowException';
+import { UserService } from 'src/user/user.service';
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
     constructor(
@@ -49,6 +48,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
                     throw CustomThrowException('Something wrong', 500);
                 },
             });
+        console.log(user);
         return user;
     }
 }

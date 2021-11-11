@@ -86,8 +86,8 @@ export class AdminToolService {
             });
     }
     findAllSemester() {
-        this.semesterModel
-            .find({ _id: '618880a3e65ed347f4f26b0e' })
+        return this.semesterModel
+            .find()
             .exec()
             .then((listSemester) => {
                 return new CustomResponse({

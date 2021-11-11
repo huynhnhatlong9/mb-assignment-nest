@@ -122,4 +122,47 @@ export class UserService {
                 );
             });
     }
+    findAllSemester() {
+        return this.userRepository
+            .getAllSemester()
+            .then((listSemester) => {
+                return new CustomResponse({
+                    success: true,
+                    statusCode: HttpStatus.OK,
+                    result: {
+                        data: listSemester,
+                        message: 'Get all semester successfully',
+                    },
+                });
+            })
+            .catch(() => {
+                throw CustomThrowException(
+                    'find all semesters failed',
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                );
+            });
+    }
+    getExamSchedule(username: string) {
+        return this.userRepository
+            .getExamSchedule(username)
+            .then((result) => {
+                return new CustomResponse({
+                    success: true,
+                    statusCode: HttpStatus.OK,
+                    result: {
+                        data: result,
+                        message: 'Get exam schedule successfully',
+                    },
+                });
+            })
+            .catch(() => {
+                throw CustomThrowException(
+                    'Get exam schedule failed',
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                );
+            });
+    }
+    getAllSubject() {
+        return this.userRepository.getAllSubject();
+    }
 }
