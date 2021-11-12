@@ -106,7 +106,22 @@ export class AdminToolService {
                 );
             });
     }
-    createClass(classSubject: CreateClassDto) {
+    async createClass(classSubject: CreateClassDto) {
+        const foundClass = await this.subjectClassModel.findOne({
+            semester: classSubject.semester,
+            lecturer: classSubject.lecturer,
+            subject: classSubject.subject,
+        });
+
+        if (foundClass) {
+            return new CustomResponse({
+                success: false,
+                statusCode: HttpStatus.BAD_REQUEST,
+                result: {
+                    message: 'Class is existing',
+                },
+            });
+        }
         return this.subjectClassModel
             .create(classSubject)
             .then((classResult) => {
@@ -115,7 +130,7 @@ export class AdminToolService {
                     statusCode: HttpStatus.OK,
                     result: {
                         data: classResult,
-                        message: 'Get all semester successfully',
+                        message: 'Create class successfully',
                     },
                 });
             })
