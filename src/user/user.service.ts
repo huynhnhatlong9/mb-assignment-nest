@@ -208,4 +208,109 @@ export class UserService {
             message: 'Register subject successfully',
         });
     }
+
+    findAllSemester() {
+        return this.userRepository
+            .getAllSemester()
+            .then((listSemester) => {
+                return new CustomResponse({
+                    success: true,
+                    statusCode: HttpStatus.OK,
+                    result: {
+                        data: listSemester,
+                        message: 'Get all semester successfully',
+                    },
+                });
+            })
+            .catch(() => {
+                throw CustomThrowException(
+                    'find all semesters failed',
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                );
+            });
+    }
+
+    getExamSchedule(username: string, semester: string) {
+        return this.userRepository
+            .getExamSchedule(username, semester)
+            .then((result) => {
+                return new CustomResponse({
+                    success: true,
+                    statusCode: HttpStatus.OK,
+                    result: {
+                        data: result,
+                        message: 'Get exam schedule successfully',
+                    },
+                });
+            })
+            .catch(() => {
+                throw CustomThrowException(
+                    'Get exam schedule failed',
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                );
+            });
+    }
+
+    getAllSubject() {
+        return this.userRepository
+            .getAllSubject()
+            .then((result) => {
+                return new CustomResponse({
+                    success: true,
+                    statusCode: HttpStatus.OK,
+                    result: {
+                        data: result,
+                        message: 'Get all subject successfully',
+                    },
+                });
+            })
+            .catch((err) => {
+                throw CustomThrowException(
+                    err.message,
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                );
+            });
+    }
+
+    getAllClass() {
+        return this.userRepository
+            .getAllClass()
+            .then((result) => {
+                return new CustomResponse({
+                    success: true,
+                    statusCode: HttpStatus.OK,
+                    result: {
+                        data: result,
+                        message: 'Get all class successfully',
+                    },
+                });
+            })
+            .catch((err) => {
+                throw CustomThrowException(
+                    err.message,
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                );
+            });
+    }
+
+    getOpenRegisterClass() {
+        return this.userRepository
+            .getOpenRegisterClass()
+            .then((result) => {
+                return new CustomResponse({
+                    success: true,
+                    statusCode: HttpStatus.OK,
+                    result: {
+                        data: result,
+                        message: 'Get opend register class successfully',
+                    },
+                });
+            })
+            .catch((err) => {
+                throw CustomThrowException(
+                    err.message,
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                );
+            });
+    }
 }

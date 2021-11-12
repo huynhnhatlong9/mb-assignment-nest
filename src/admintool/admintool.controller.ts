@@ -11,6 +11,7 @@ import {
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Response } from 'express';
 import { catchError, map, Observable } from 'rxjs';
+import { Public } from 'src/core/decorators/guards/public.guards.decorator';
 import { HasRole } from './../auth/guard/has-role.decorator';
 import { RolesGuard } from './../auth/guard/roles.guard';
 import { RolesType } from './../shared/roles-type.enum';
@@ -20,12 +21,17 @@ import { CreateLectureDto } from './dto/CreateLecture.dto';
 import { CreateSubjectDto } from './dto/CreateSubject.dto';
 import { CreateSemesterDto } from './dto/semester.dto';
 @ApiBearerAuth()
-@UseGuards(RolesGuard)
-@HasRole([RolesType.ADMIN])
+// @UseGuards(RolesGuard)
+// @HasRole([RolesType.ADMIN])
 @Controller('admintool')
 export class AdminToolController {
+<<<<<<< HEAD
     constructor(private readonly adminService: AdminToolService) {}
 
+=======
+    constructor(private readonly adminService: AdminToolService) { }
+    @Public()
+>>>>>>> ebf6065de81488b2cf58b185a4b06119ac5c2299
     @Post('/create-lecture')
     createLecture(
         @Body() body: CreateLectureDto,
@@ -43,7 +49,7 @@ export class AdminToolController {
             }),
         );
     }
-
+    @Public()
     @Post('/create-subject')
     createSubject(
         @Body() body: CreateSubjectDto,
@@ -65,15 +71,17 @@ export class AdminToolController {
     // createRegisterSubject(@Body() body: CreateRegisterSubjectDto) {
     //     return this.adminService.creatRegistSubject(body);
     // }
+    @Public()
     @Post('/create-semester')
     createSemester(@Body() body: CreateSemesterDto) {
         return this.adminService.createSemester(body);
     }
+    @Public()
     @Post('/create-class')
     createClass(@Body() body: CreateClassDto) {
         return this.adminService.createClass(body);
     }
-
+    @Public()
     @Get('/semester')
     findAllSemester() {
         return this.adminService.findAllSemester();

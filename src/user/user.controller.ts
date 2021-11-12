@@ -28,6 +28,7 @@ import { UserService } from './user.service';
 import { RolesType } from 'src/shared/roles-type.enum';
 import { SubjectRegisterDto } from './dto/subject-register.dto';
 import { INTERNAL_SERVER_ERROR } from 'src/common/constants/status-message.const';
+import { ExamScheduleDto } from './dto/exam-schedule.dto';
 
 @ApiBearerAuth()
 @Controller({ path: 'user' })
@@ -163,5 +164,38 @@ export class UserController {
                 message: INTERNAL_SERVER_ERROR,
             });
         }
+    }
+
+    @Get('/all-semester')
+    getAllSemester() {
+        return this.userService.findAllSemester();
+    }
+
+    @Post('/exam-schedule')
+    getExamSchedule(
+        @Body() semester: ExamScheduleDto,
+        @Req() req: AuthenticatedRequest,
+    ) {
+        return this.userService.getExamSchedule(
+            req.user.username,
+            semester.semester,
+        );
+    }
+
+    @Public()
+    @Get('/all-subject')
+    getAllSubject() {
+        return this.userService.getAllSubject();
+    }
+
+    @Public()
+    @Get('/all-class')
+    getAllClass() {
+        return this.userService.getAllClass();
+    }
+
+    @Get('/open-register-classes')
+    getOpenRegisterClass() {
+        return this.userService.getOpenRegisterClass();
     }
 }

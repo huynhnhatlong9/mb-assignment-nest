@@ -10,11 +10,11 @@ type SubjectScoreModel = Model<SubjectScore>;
 
 const SubjectScoreSchema = new Schema<SubjectScore>({
     user: {
-        type: SchemaTypes.String,
+        type: SchemaTypes.ObjectId,
         ref: 'User',
     },
     subject: {
-        type: SchemaTypes.String,
+        type: SchemaTypes.ObjectId,
         ref: 'Subject',
     },
     score: [SchemaTypes.Number],
