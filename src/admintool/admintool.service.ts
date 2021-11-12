@@ -31,8 +31,8 @@ export class AdminToolService {
         private subjectClassModel: SubjectClassModel,
     ) {}
 
-    createLecture(lecturer: CreateLectureDto): Observable<any> {
-        return from(this.lectureModel.create(lecturer));
+    createLecture(lecture: CreateLectureDto): Observable<any> {
+        return from(this.lectureModel.create(lecture));
     }
 
     createSubject(subject: CreateSubjectDto): Observable<Subject> {
@@ -107,21 +107,6 @@ export class AdminToolService {
             });
     }
     createClass(classSubject: CreateClassDto) {
-        const foundClass = this.subjectClassModel.findOne({
-            semester: classSubject.semester,
-            subject: classSubject.subject,
-            lecturer: classSubject.lecturer,
-        });
-
-        if (foundClass)
-            return new CustomResponse({
-                success: false,
-                statusCode: HttpStatus.BAD_REQUEST,
-                result: {
-                    message: 'Class is existing',
-                },
-            });
-
         return this.subjectClassModel
             .create(classSubject)
             .then((classResult) => {
@@ -130,7 +115,7 @@ export class AdminToolService {
                     statusCode: HttpStatus.OK,
                     result: {
                         data: classResult,
-                        message: 'Create Class successfully',
+                        message: 'Get all semester successfully',
                     },
                 });
             })

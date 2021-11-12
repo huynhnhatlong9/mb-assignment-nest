@@ -1,4 +1,4 @@
-export class CustomResponse{
+export class CustomResponse {
     success: boolean;
     result: any;
     statusCode: number;

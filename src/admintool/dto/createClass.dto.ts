@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 import { weekdayEnum } from 'src/common/enums/weekday.enum';
+class Exam {
+    @ApiProperty()
+    time: Date;
+    @ApiProperty()
+    address: string;
+}
 export class CreateClassDto {
     @ApiProperty()
     @IsNotEmpty()
@@ -42,11 +48,11 @@ export class CreateClassDto {
 
     numOfStudent: number;
 
-    @ApiProperty()
-    midExamSchedule: Date;
+    @ApiProperty({ type: Exam })
+    midExamSchedule: string;
 
-    @ApiProperty()
-    finalExamSchedule: Date;
+    @ApiProperty({ type: Exam })
+    finalExamSchedule: string;
 
     @ApiProperty({ default: 1 })
     @IsNotEmpty()
