@@ -9,6 +9,7 @@ import {
     Post,
     Put,
     Req,
+    Request,
     Res,
     UseGuards,
 } from '@nestjs/common';
@@ -25,11 +26,13 @@ import { UpdateProfileDto } from './dto/update.dto';
 import { UserProfile } from './interface/user-profile.interface';
 import { UserService } from './user.service';
 import { RolesType } from 'src/shared/roles-type.enum';
+import { SubjectRegisterDto } from './dto/subject-register.dto';
+import { INTERNAL_SERVER_ERROR } from 'src/common/constants/status-message.const';
 
 @ApiBearerAuth()
 @Controller({ path: 'user' })
 export class UserController {
-    constructor(private readonly userService: UserService) { }
+    constructor(private readonly userService: UserService) {}
     @Public()
     @Post('/register')
     register(@Body() data: RegisterDto, @Res() res: Response) {
@@ -106,6 +109,7 @@ export class UserController {
             }),
         );
     }
+
     @Get('/personal-information')
     getPersonalInformation(@Req() req: AuthenticatedRequest) {
         return this.userService.getPersonalInformation(req.user.username);
@@ -120,13 +124,44 @@ export class UserController {
             personalInfo,
         );
     }
+
     @Get('/academic-information')
     getAcademicInformation(@Req() req: AuthenticatedRequest) {
         return this.userService.getAcademicInformation(req.user.username);
     }
+
     @Public()
     @Post('/admin-register')
     registerAdmin(@Body() body: AdminRegisterDto) {
         return this.userService.registerAdmin(body);
+    }
+
+    @Put('/register-class/:userId')
+    async registerClass(
+        @Request() req,
+        @Res() res: Response,
+        @Body() subjectRegisterDto: SubjectRegisterDto,
+    ) {
+        const userId = req.params.userId;
+        try {
+            const result = await this.userService.registerSubject(
+                userId,
+                subjectRegisterDto,
+            );
+
+            return res
+                .status(result.success ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
+                .json({
+                    success: result.success,
+                    message: result.message,
+                });
+        } catch (error) {
+            console.log(error);
+
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                success: false,
+                message: INTERNAL_SERVER_ERROR,
+            });
+        }
     }
 }

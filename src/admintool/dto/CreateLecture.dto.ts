@@ -7,8 +7,8 @@ export class CreateLectureDto {
     @IsEmail()
     email: string;
     @ApiProperty()
-    @IsPhoneNumber()
-    phone: number;
+    // @IsPhoneNumber()
+    phone: string;
     @ApiProperty()
-    subject: string;
+    subject: string[];
 }

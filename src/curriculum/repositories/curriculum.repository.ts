@@ -46,7 +46,7 @@ export class CurriculumRepository {
         return curriculum;
     }
 
-    async deleteCurriculum(curriculumDeleteCondition: { _id: string }) {
+    async deleteCurriculum(curriculumDeleteCondition) {
         return await this.curriculumModel.findOneAndDelete(
             curriculumDeleteCondition,
         );

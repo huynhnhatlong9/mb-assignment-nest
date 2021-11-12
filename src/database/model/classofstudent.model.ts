@@ -10,23 +10,22 @@ const classOfStudentSChema = new Schema<ClassOfStudent>({
         type: SchemaTypes.ObjectId,
         ref: 'User',
     },
-    listClass: [
-        {
-            type: SchemaTypes.ObjectId,
-            ref: 'SubjectClass',
-        },
-    ],
-    listRegister: [
-        {
-            register: {
-                type: SchemaTypes.ObjectId,
-                ref: 'RegisterSubject',
-            },
-            class: {
-                type: SchemaTypes.ObjectId,
-                ref: 'SubjectClass',
-            },
-        },
-    ],
+    listClass: {
+        type: [SchemaTypes.ObjectId],
+        ref: 'SubjectClass',
+    },
+
+    // listRegister: [
+    //     {
+    //         register: {
+    //             type: SchemaTypes.ObjectId,
+    //             ref: 'RegisterSubject',
+    //         },
+    //         class: {
+    //             type: SchemaTypes.ObjectId,
+    //             ref: 'SubjectClass',
+    //         },
+    //     },
+    // ],
 });
 export { ClassOfStudent, ClassOfStudentModel, classOfStudentSChema };

@@ -12,7 +12,10 @@ interface Subject extends Document {
 type SubjectModel = Model<Subject>;
 
 const SubjectSchema = new Schema<Subject>({
-    name: SchemaTypes.String,
+    name: {
+        type: String,
+        unique: true,
+    },
     credit: SchemaTypes.Number,
     lession: SchemaTypes.Number,
     durationPerLession: SchemaTypes.Number,

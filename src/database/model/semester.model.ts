@@ -8,7 +8,10 @@ interface Semester extends Document {
 type SemesterModel = Model<Semester>;
 
 const SemesterSchema = new Schema<Semester>({
-    name: SchemaTypes.String,
+    name: {
+        type: String,
+        unique: true,
+    },
     duringTime: [SchemaTypes.Date],
 });
 

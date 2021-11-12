@@ -29,10 +29,10 @@ export class AdminToolService {
         @Inject(SEMESTER_MODEL) private semesterModel: SemesterModel,
         @Inject(SUBJECT_CLASS_MODEL)
         private subjectClassModel: SubjectClassModel,
-    ) { }
+    ) {}
 
-    createLecture(lecture: CreateLectureDto): Observable<any> {
-        return from(this.lectureModel.create(lecture));
+    createLecture(lecturer: CreateLectureDto): Observable<any> {
+        return from(this.lectureModel.create(lecturer));
     }
 
     createSubject(subject: CreateSubjectDto): Observable<Subject> {
@@ -86,8 +86,8 @@ export class AdminToolService {
             });
     }
     findAllSemester() {
-        this.semesterModel
-            .find({ _id: '618880a3e65ed347f4f26b0e' })
+        return this.semesterModel
+            .find()
             .exec()
             .then((listSemester) => {
                 return new CustomResponse({
@@ -107,6 +107,21 @@ export class AdminToolService {
             });
     }
     createClass(classSubject: CreateClassDto) {
+        const foundClass = this.subjectClassModel.findOne({
+            semester: classSubject.semester,
+            subject: classSubject.subject,
+            lecturer: classSubject.lecturer,
+        });
+
+        if (foundClass)
+            return new CustomResponse({
+                success: false,
+                statusCode: HttpStatus.BAD_REQUEST,
+                result: {
+                    message: 'Class is existing',
+                },
+            });
+
         return this.subjectClassModel
             .create(classSubject)
             .then((classResult) => {
@@ -115,7 +130,7 @@ export class AdminToolService {
                     statusCode: HttpStatus.OK,
                     result: {
                         data: classResult,
-                        message: 'Get all semester successfully',
+                        message: 'Create Class successfully',
                     },
                 });
             })
