@@ -11,6 +11,7 @@ import { CurriculumModule } from './curriculum/curriculum.module';
 import { CartModule } from './cart/cart.module';
 import { MailModule } from './mailmodule/mailmodule.module';
 import { QuestionModule } from './question/question.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
     imports: [
@@ -28,6 +29,7 @@ import { QuestionModule } from './question/question.module';
         CartModule,
         MailModule,
         QuestionModule,
+        PaymentModule,
     ],
     controllers: [AppController],
     providers: [AppService],

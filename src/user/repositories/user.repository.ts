@@ -170,6 +170,8 @@ export class UserRepository {
         );
     }
 
+    // async addToPayment()
+
     getAllSemester() {
         return this.semesterModel.find().exec();
     }

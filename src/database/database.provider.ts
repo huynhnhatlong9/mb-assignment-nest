@@ -12,6 +12,7 @@ import {
     CART_MODEL,
     CURRICULUM_MODEL,
     QUESTION_MODEL,
+    PAYMENT_MODEL,
 } from './database.constants';
 import { ConfigType } from '@nestjs/config';
 import mongodbConfig from '../config/mongodb.config';
@@ -34,6 +35,7 @@ import {
 import { Curriculum, CurriculumSchema } from './model/curriculum.model';
 import { Cart, CartSchema } from './model/cart.model';
 import { Question, QuestionSchema } from './model/question';
+import { Payment, PaymentSchema } from './model/payment';
 
 export const dbProviders = [
     {
@@ -165,6 +167,13 @@ export const dbProviders = [
                 QuestionSchema,
                 'questions',
             );
+        },
+        inject: [DB_CONNECTION],
+    },
+    {
+        provide: PAYMENT_MODEL,
+        useFactory: (conn: Connection) => {
+            return conn.model<Payment>('Payment', PaymentSchema, 'payments');
         },
         inject: [DB_CONNECTION],
     },
