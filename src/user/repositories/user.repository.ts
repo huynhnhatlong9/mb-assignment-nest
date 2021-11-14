@@ -61,7 +61,7 @@ export class UserRepository {
                 .findOneAndUpdate(
                     { username: username },
                     { ...data },
-                    { new: true },
+                    { new: true, useFindAndModify: false },
                 )
                 .exec(),
         ).pipe(
@@ -181,13 +181,13 @@ export class UserRepository {
             const resultId = (await this.findUserIdByNamePromise(
                 username,
             )) as any;
-            await this.registerSubjectLookUpforTest(resultId._id);
-            const listClass = await this.classOfStudentModel
-                .find({ studentId: resultId._id }, { listClass: 1 })
-                .exec();
-            console.log(listClass);
+
+            const listClass = await this.classOfStudentModel.findOne({
+                studentId: resultId._id,
+            });
+
             const getListExamPromise = [];
-            listClass[0].listClass.forEach(async (element) => {
+            listClass.listClass.forEach(async (element) => {
                 getListExamPromise.push(
                     this.subjectClassModel.aggregate([
                         {
@@ -232,9 +232,7 @@ export class UserRepository {
     }
 
     findUserIdByNamePromise(username: string) {
-        return this.userModel
-            .findOne({ username: username }, { _id: 1 })
-            .exec();
+        return this.userModel.findOne({ username: username }).exec();
     }
 
     getAllSubject() {

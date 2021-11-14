@@ -11,7 +11,7 @@ export class AuthService {
     constructor(
         private jwtService: JwtService,
         private userService: UserService,
-    ) { }
+    ) {}
 
     validateUser(
         username: string,
@@ -19,7 +19,6 @@ export class AuthService {
     ): Observable<UserPrincipal> {
         return this.userService.findUserByName(username).pipe(
             mergeMap((user) => {
-                console.log(user);
                 if (!user) {
                     throw new UnauthorizedException('Username not match');
                 } else {

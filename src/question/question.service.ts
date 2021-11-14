@@ -6,8 +6,10 @@ import { QuestionRepository } from './repositories/question.repository';
 export class QuestionService {
     constructor(private questionRepository: QuestionRepository) {}
 
-    async create(createQuestionDto: CreateQuestionDto) {
+    async create(userId: string, createQuestionDto: CreateQuestionDto) {
+        const foundUser = await this.questionRepository.findUserById(userId);
         return await this.questionRepository.createNewQuestion(
+            foundUser.email,
             createQuestionDto,
         );
     }

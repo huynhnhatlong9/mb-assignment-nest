@@ -7,6 +7,7 @@ interface Curriculum extends Document {
     image: string;
     status: string;
     quanlity: number;
+    types: string;
     carts: string[];
 }
 
@@ -37,6 +38,10 @@ const CurriculumSchema = new Schema({
     quanlity: {
         type: Number,
         default: 100,
+    },
+    types: {
+        type: String,
+        require: true,
     },
     carts: {
         type: [SchemaTypes.ObjectId],

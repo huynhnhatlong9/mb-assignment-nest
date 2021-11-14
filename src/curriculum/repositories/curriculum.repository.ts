@@ -22,7 +22,7 @@ export class CurriculumRepository {
     }
 
     async getAllCurriculum(page: number, limit: number) {
-        const skipData: number = page > 1 ? (page - 1) * limit - 1 : 0;
+        const skipData: number = page > 1 ? (page - 1) * limit : 0;
         const curriculums = await this.curriculumModel
             .find()
             .skip(skipData)
@@ -50,5 +50,13 @@ export class CurriculumRepository {
         return await this.curriculumModel.findOneAndDelete(
             curriculumDeleteCondition,
         );
+    }
+
+    async getAllCurriculums() {
+        return await this.curriculumModel.find();
+    }
+
+    async getCurriculumsByTypes(types: string) {
+        return await this.curriculumModel.find({ types });
     }
 }

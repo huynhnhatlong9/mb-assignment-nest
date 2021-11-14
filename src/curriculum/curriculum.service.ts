@@ -36,4 +36,23 @@ export class CurriculumService {
     async remove(id: string) {
         return await this.curriculumRepository.deleteCurriculum(id);
     }
+
+    async getCurriculumByKeywork(keywork: string) {
+        const listCurriculums =
+            await this.curriculumRepository.getAllCurriculums();
+
+        let foundCurriculums = [];
+        let idx = 0;
+        for (const curriculum of listCurriculums) {
+            if (curriculum.curriculumName.includes(keywork)) {
+                foundCurriculums[idx] = curriculum;
+                idx++;
+            }
+        }
+        return Promise.resolve(foundCurriculums);
+    }
+
+    async getCurriculumByTypes(types: string) {
+        return await this.curriculumRepository.getCurriculumsByTypes(types);
+    }
 }

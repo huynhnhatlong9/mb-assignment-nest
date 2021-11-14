@@ -9,11 +9,13 @@ export class MailRequestDto {
     @ApiProperty()
     @IsNotEmpty()
     @IsArray()
-    to_emails: Array<string>;
+    to_emails: string;
 
     @ApiProperty()
     @IsNotEmpty()
     subject: string;
+
+    content?: string;
 
     @ApiProperty()
     @IsNotEmpty()

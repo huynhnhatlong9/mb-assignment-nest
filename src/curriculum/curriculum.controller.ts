@@ -11,6 +11,7 @@ import {
     HttpStatus,
     UseInterceptors,
     UploadedFile,
+    Query,
 } from '@nestjs/common';
 import { CurriculumService } from './curriculum.service';
 import { CreateCurriculumDto } from './dto/create-curriculum.dto';
@@ -79,6 +80,50 @@ export class CurriculumController {
             return res.status(HttpStatus.CREATED).json({
                 success: true,
                 createdCurriculum,
+            });
+        } catch (error) {
+            console.log(error);
+
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                success: false,
+                message: INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
+    @Get('search/types')
+    async searchByTypes(
+        @Response() res,
+        @Query('types') types: string,
+    ): Promise<IGetAllCurriculum> {
+        try {
+            const foundCurriculum =
+                await this.curriculumService.getCurriculumByTypes(types);
+            res.status(HttpStatus.OK).json({
+                success: true,
+                curriculums: foundCurriculum,
+            });
+        } catch (error) {
+            console.log(error);
+
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                success: false,
+                message: INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
+    @Get('search/keywork')
+    async search(
+        @Response() res,
+        @Query('keywork') keywork: string,
+    ): Promise<IGetAllCurriculum> {
+        try {
+            const foundCurriculum =
+                await this.curriculumService.getCurriculumByKeywork(keywork);
+            res.status(HttpStatus.OK).json({
+                success: true,
+                curriculums: foundCurriculum,
             });
         } catch (error) {
             console.log(error);
