@@ -10,7 +10,7 @@ export class CartService {
     async create(createCartDto: CreateCartDto) {
         if (!(await this.cartRepository.checkUserId(createCartDto.userId)))
             return Promise.resolve(false);
-        return await this.cartRepository.createNewCurriculum(createCartDto);
+        return await this.cartRepository.createNewCart(createCartDto);
     }
 
     async findOne(id: string) {
@@ -18,7 +18,14 @@ export class CartService {
     }
 
     async findByUserId(userId: string) {
-        return await this.cartRepository.getCartByUserId(userId);
+        let foundCart = await this.cartRepository.getCartByUserId(userId);
+        if (!foundCart) {
+            foundCart = await this.cartRepository.createNewCart({
+                userId,
+                curriculums: [],
+            });
+        }
+        return Promise.resolve(foundCart);
     }
 
     async update(id: string, updateCartDto: UpdateCartDto) {

@@ -19,7 +19,7 @@ export class CartRepository {
         @Inject(CURRICULUM_MODEL) private curriculumModel: CurriculumModel,
     ) {}
 
-    async createNewCurriculum(createCart: CreateCartDto) {
+    async createNewCart(createCart: CreateCartDto) {
         const createdCart = await this.cartModel.create(createCart);
         return createdCart;
     }
@@ -48,6 +48,7 @@ export class CartRepository {
     }
 
     async updateCart(cartUpdateCondition, updatedCart) {
+        console.log(cartUpdateCondition, updatedCart);
         const cart = await this.cartModel.findOneAndUpdate(
             cartUpdateCondition,
             updatedCart,

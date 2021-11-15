@@ -287,4 +287,7 @@ export class UserRepository {
             ])
             .exec();
     }
+    getSchedule(selectedDate: Date) {
+        
+    }
 }

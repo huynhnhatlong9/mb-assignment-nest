@@ -6,4 +6,8 @@ export class CreateCartDto {
     userId: string;
 
     curriculums?: string[];
+
+    phone?: string;
+
+    address?: string;
 }

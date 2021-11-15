@@ -13,6 +13,10 @@ export class CreateCurriculumDto {
     @IsDefined()
     author: string;
 
+    @IsString()
+    @IsDefined()
+    types: string;
+
     quanlity?: number;
 
     image?: string;
