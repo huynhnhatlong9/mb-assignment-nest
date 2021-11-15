@@ -1,3 +1,4 @@
+import { ScheduleDto } from './dto/schedule.dto';
 import { AdminRegisterDto } from './dto/admin-register.dto';
 import {
     Body,
@@ -201,5 +202,16 @@ export class UserController {
     @Get('/open-register-classes')
     getOpenRegisterClass() {
         return this.userService.getOpenRegisterClass();
+    }
+    // @Public()
+    @Post('/schedule')
+    getSchedule(
+        @Body() dateRequest: ScheduleDto,
+        @Req() req: AuthenticatedRequest,
+    ) {
+        return this.userService.getSchedule(
+            dateRequest.selectedDate,
+            req.user.username,
+        );
     }
 }

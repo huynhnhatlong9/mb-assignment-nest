@@ -343,4 +343,7 @@ export class UserService {
                 );
             });
     }
+    getSchedule(selectedDate: Date, userName: string) {
+        return this.userRepository.getSchedule(selectedDate, userName);
+    }
 }

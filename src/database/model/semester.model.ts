@@ -13,8 +13,8 @@ const SemesterSchema = new Schema<Semester>({
         type: String,
         unique: true,
     },
-    startTime: SchemaTypes.Date;
-    endTime: SchemaTypes.Date;
+    startTime: SchemaTypes.Date,
+    endTime: SchemaTypes.Date,
 });
 
 export { Semester, SemesterModel, SemesterSchema };
