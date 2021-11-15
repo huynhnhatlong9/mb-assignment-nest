@@ -61,7 +61,7 @@ export class UserRepository {
                 .findOneAndUpdate(
                     { username: username },
                     { ...data },
-                    { new: true, useFindAndModify: false },
+                    { new: true },
                 )
                 .exec(),
         ).pipe(
@@ -141,10 +141,6 @@ export class UserRepository {
         });
     }
 
-    async findClassByClassId(classId: string) {
-        return await this.subjectClassModel.findById(classId);
-    }
-
     async findClassOfIdByUserId(userId: string) {
         return await this.classOfStudentModel.findOne({ studentId: userId });
     }
@@ -174,8 +170,6 @@ export class UserRepository {
         );
     }
 
-    // async addToPayment()
-
     getAllSemester() {
         return this.semesterModel.find().exec();
     }
@@ -185,13 +179,13 @@ export class UserRepository {
             const resultId = (await this.findUserIdByNamePromise(
                 username,
             )) as any;
-
-            const listClass = await this.classOfStudentModel.findOne({
-                studentId: resultId._id,
-            });
-
+            // wait this.registerSubjectLookUpforTest(resultId._id);
+            const listClass = await this.classOfStudentModel
+                .find({ studentId: resultId._id }, { listClass: 1 })
+                .exec();
+            console.log(listClass);
             const getListExamPromise = [];
-            listClass.listClass.forEach(async (element) => {
+            listClass[0].listClass.forEach(async (element) => {
                 getListExamPromise.push(
                     this.subjectClassModel.aggregate([
                         {
@@ -236,7 +230,9 @@ export class UserRepository {
     }
 
     findUserIdByNamePromise(username: string) {
-        return this.userModel.findOne({ username: username }).exec();
+        return this.userModel
+            .findOne({ username: username }, { _id: 1 })
+            .exec();
     }
 
     getAllSubject() {
@@ -290,5 +286,8 @@ export class UserRepository {
                 },
             ])
             .exec();
+    }
+    getSchedule(selectedDate: Date) {
+        
     }
 }
