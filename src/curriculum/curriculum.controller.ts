@@ -140,6 +140,7 @@ export class CurriculumController {
         try {
             const page = req.params.page;
             const limit = req.params.limit;
+            console.log(page);
             const curriculums = await this.curriculumService.findAll(
                 page,
                 limit,
