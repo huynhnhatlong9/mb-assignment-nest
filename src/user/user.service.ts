@@ -10,6 +10,8 @@ import { RegisterDto } from './dto/register.dto';
 import { UpdateProfileDto } from './dto/update.dto';
 import { UserRepository } from './repositories/user.repository';
 import { SubjectRegisterDto } from './dto/subject-register.dto';
+import { IRegisterSubject } from './interface/user-profile.interface';
+import { SubjectClass } from 'src/database/model/subject-class.model';
 @Injectable()
 export class UserService {
     constructor(private userRepository: UserRepository) {}
@@ -145,10 +147,16 @@ export class UserService {
         return count > 1 ? false : true;
     }
 
+    findClassOpen(listClass: SubjectClass[]) {
+        return listClass.filter(
+            (classObj: SubjectClass) => classObj.status === 1,
+        );
+    }
+
     async registerSubject(
         userId: string,
         subjectRegisterDto: SubjectRegisterDto,
-    ) {
+    ): Promise<IRegisterSubject> {
         const checkExistingClass =
             await this.userRepository.findClassOfIdByUserId(userId);
 
@@ -156,16 +164,11 @@ export class UserService {
             await this.userRepository.createClassOfStudent(userId);
         }
 
-        const { semesterName, subjectName } = subjectRegisterDto;
-        const foundClass =
-            await this.userRepository.findSubjectClassBySemesterAndName(
-                semesterName,
-                subjectName,
-            );
+        const classId = subjectRegisterDto.classId;
 
-        if (foundClass.numOfStudent >= foundClass.maxStudent) {
-            return Promise.resolve({ success: false, message: 'Slot is full' });
-        }
+        const foundClass = await this.userRepository.findClassByClassId(
+            classId,
+        );
 
         const foundClassOfStudent =
             await this.userRepository.findClassOfIdByUserId(userId);
@@ -175,36 +178,63 @@ export class UserService {
                 foundClassOfStudent.listClass,
             );
 
-        const listPeriodFoundClass = this.createListPeriod(foundClass.period);
-        for (const classOfUser of listExistingClassOfUser) {
-            let listPeriodClassOfUser = this.createListPeriod(
-                classOfUser.period,
-            );
-            if (
-                !this.checkPeriod(
-                    listPeriodFoundClass,
-                    listPeriodClassOfUser,
-                ) &&
-                foundClass.weekday === classOfUser.weekday
-            )
-                return Promise.resolve({
-                    success: false,
-                    message: 'Conflict time',
-                });
+        if (!foundClass.status) {
+            return Promise.resolve({
+                success: false,
+                updatedListClass: this.findClassOpen(listExistingClassOfUser),
+                message: 'Class is not open',
+            });
         }
+
+        if (foundClass.numOfStudent >= foundClass.maxStudent) {
+            return Promise.resolve({
+                success: false,
+                message: 'Slot is full',
+                updatedListClass: this.findClassOpen(listExistingClassOfUser),
+            });
+        }
+
+        const listPeriodFoundClass = this.createListPeriod(foundClass.period);
+        if (listExistingClassOfUser)
+            for (const classOfUser of listExistingClassOfUser) {
+                let listPeriodClassOfUser = this.createListPeriod(
+                    classOfUser.period,
+                );
+                if (
+                    !this.checkPeriod(
+                        listPeriodFoundClass,
+                        listPeriodClassOfUser,
+                    ) &&
+                    foundClass.weekday === classOfUser.weekday
+                )
+                    return Promise.resolve({
+                        success: false,
+                        updatedListClass: this.findClassOpen(
+                            listExistingClassOfUser,
+                        ),
+                        message: 'Conflict time',
+                    });
+            }
 
         const updatedObj = {
             studentId: foundClassOfStudent.studentId,
             listClass: [...foundClassOfStudent.listClass, foundClass._id],
         };
 
-        await this.userRepository.updateClassOfStudent(
-            { _id: foundClassOfStudent._id },
-            updatedObj,
-        );
+        const updatedClassOfStudent =
+            await this.userRepository.updateClassOfStudent(
+                { _id: foundClassOfStudent._id },
+                updatedObj,
+            );
+
+        const updatedListClass =
+            await this.userRepository.findAllClassOfListClassId(
+                updatedClassOfStudent.listClass,
+            );
 
         return Promise.resolve({
             success: true,
+            updatedListClass: this.findClassOpen(updatedListClass),
             message: 'Register subject successfully',
         });
     }

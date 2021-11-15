@@ -9,7 +9,7 @@ export class QuestionService {
     async create(userId: string, createQuestionDto: CreateQuestionDto) {
         const foundUser = await this.questionRepository.findUserById(userId);
         return await this.questionRepository.createNewQuestion(
-            foundUser.email,
+            foundUser,
             createQuestionDto,
         );
     }

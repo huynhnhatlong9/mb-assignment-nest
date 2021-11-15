@@ -23,7 +23,10 @@ import { User } from '../database/model/user.model';
 import { PersonalInformationDto } from './dto/personal-information.dto';
 import { RegisterDto } from './dto/register.dto';
 import { UpdateProfileDto } from './dto/update.dto';
-import { UserProfile } from './interface/user-profile.interface';
+import {
+    IRegisterSubject,
+    UserProfile,
+} from './interface/user-profile.interface';
 import { UserService } from './user.service';
 import { RolesType } from 'src/shared/roles-type.enum';
 import { SubjectRegisterDto } from './dto/subject-register.dto';
@@ -155,6 +158,7 @@ export class UserController {
                 .json({
                     success: result.success,
                     message: result.message,
+                    updatedListClass: result.updatedListClass,
                 });
         } catch (error) {
             console.log(error);

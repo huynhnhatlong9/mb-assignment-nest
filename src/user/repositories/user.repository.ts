@@ -141,6 +141,10 @@ export class UserRepository {
         });
     }
 
+    async findClassByClassId(classId: string) {
+        return await this.subjectClassModel.findById(classId);
+    }
+
     async findClassOfIdByUserId(userId: string) {
         return await this.classOfStudentModel.findOne({ studentId: userId });
     }

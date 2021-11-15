@@ -11,5 +11,7 @@ export class CreateQuestionDto {
     @IsDefined()
     email: string;
 
+    body?: string;
+
     file?: string;
 }
