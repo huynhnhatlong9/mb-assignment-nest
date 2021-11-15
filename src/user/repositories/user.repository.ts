@@ -287,7 +287,9 @@ export class UserRepository {
             ])
             .exec();
     }
-    getSchedule(selectedDate: Date) {
-        
+    getSchedule(selectedDate: Date) {}
+
+    async findClassByClassId(classId: string) {
+        return await this.subjectClassModel.findById(classId);
     }
 }
