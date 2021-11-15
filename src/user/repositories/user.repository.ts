@@ -179,7 +179,7 @@ export class UserRepository {
             const resultId = (await this.findUserIdByNamePromise(
                 username,
             )) as any;
-            await this.registerSubjectLookUpforTest(resultId._id);
+            // wait this.registerSubjectLookUpforTest(resultId._id);
             const listClass = await this.classOfStudentModel
                 .find({ studentId: resultId._id }, { listClass: 1 })
                 .exec();

@@ -7,5 +7,9 @@ export class CreateSemesterDto {
 
     @ApiProperty()
     @IsNotEmpty()
-    duringTime: Array<Date>;
+    startTime: Date;
+
+    @ApiProperty()
+    @IsNotEmpty()
+    endTime: Date;
 }

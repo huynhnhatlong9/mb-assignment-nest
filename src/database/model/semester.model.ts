@@ -2,7 +2,8 @@ import { Document, Model, Schema, SchemaTypes } from 'mongoose';
 
 interface Semester extends Document {
     name: string;
-    duringTime: Array<Date>;
+    startTime: Date;
+    endTime: Date;
 }
 
 type SemesterModel = Model<Semester>;
@@ -12,7 +13,8 @@ const SemesterSchema = new Schema<Semester>({
         type: String,
         unique: true,
     },
-    duringTime: [SchemaTypes.Date],
+    startTime: SchemaTypes.Date;
+    endTime: SchemaTypes.Date;
 });
 
 export { Semester, SemesterModel, SemesterSchema };
