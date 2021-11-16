@@ -6,8 +6,10 @@ import {
     Param,
     Post,
     Put,
+    Req,
     Response,
 } from '@nestjs/common';
+import { AuthenticatedRequest } from 'src/auth/interface/authenticated-request.interface';
 import {
     INTERNAL_SERVER_ERROR,
     INVALID_INPUT,
@@ -76,13 +78,17 @@ export class CartController {
         }
     }
 
-    @Get('user/:id')
+    @Get('user/:username')
     async findCartByUserId(
-        @Param('id') id: string,
+        @Param('username') username: string,
         @Response() res,
     ): Promise<IGetOneCart> {
         try {
-            const foundCart = await this.cartService.findByUserId(id);
+            const foundUser = await this.cartService.findUserByName(username);
+            const foundCart = await this.cartService.findByUserId(
+                foundUser._id,
+                username,
+            );
             return res.status(HttpStatus.OK).json({
                 success: true,
                 foundCart,
@@ -104,10 +110,13 @@ export class CartController {
         @Response() res,
     ): Promise<IUpdateCart> {
         try {
-            const updatedCart = await this.cartService.update(
-                id,
-                updateCartDto,
+            const foundUser = await this.cartService.findUserByName(
+                updateCartDto.username,
             );
+            const updatedCart = await this.cartService.update(id, {
+                ...updateCartDto,
+                userId: foundUser._id,
+            });
             return res.status(HttpStatus.OK).json({
                 success: true,
                 updatedCart,
@@ -129,7 +138,14 @@ export class CartController {
         @Response() res,
     ): Promise<ICheckout> {
         try {
-            await this.cartService.Checkout(id, updateCartDto);
+            const foundUser = await this.cartService.findUserByName(
+                updateCartDto.username,
+            );
+
+            await this.cartService.Checkout(id, {
+                ...updateCartDto,
+                userId: foundUser._id,
+            });
 
             return res.status(HttpStatus.OK).json({
                 success: true,

@@ -1,9 +1,9 @@
 import { IsDefined, IsString } from 'class-validator';
 
 export class CreateCartDto {
-    @IsDefined()
-    @IsString()
-    userId: string;
+    username?: string;
+
+    userId?: string;
 
     curriculums?: string[];
 

@@ -6,11 +6,14 @@ import { QuestionService } from './question.service';
 export class QuestionController {
     constructor(private readonly questionService: QuestionService) {}
 
-    @Post(':userId')
-    create(
+    @Post(':username')
+    async create(
         @Body() createQuestionDto: CreateQuestionDto,
-        @Param('userId') userId: string,
+        @Param('username') username: string,
     ) {
-        return this.questionService.create(userId, createQuestionDto);
+        const foundUser = await this.questionService.findUserByUsername(
+            username,
+        );
+        return this.questionService.create(foundUser._id, createQuestionDto);
     }
 }

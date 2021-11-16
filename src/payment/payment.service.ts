@@ -83,4 +83,8 @@ export class PaymentService {
 
         return await this.updateCost(foundPayment._id, foundClass);
     }
+
+    async findUserByUsername(username: string) {
+        return this.paymentRepository.findUserByUsername(username);
+    }
 }

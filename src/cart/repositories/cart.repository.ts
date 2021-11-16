@@ -72,4 +72,8 @@ export class CartRepository {
         }
         return Promise.resolve(true);
     }
+
+    async findUserByName(username: string) {
+        return await this.userModel.findOne({ username });
+    }
 }

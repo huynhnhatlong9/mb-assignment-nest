@@ -292,4 +292,8 @@ export class UserRepository {
     async findClassByClassId(classId: string) {
         return await this.subjectClassModel.findById(classId);
     }
+
+    async findUserByUsername(username: string) {
+        return await this.userModel.findOne({ username });
+    }
 }

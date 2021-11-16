@@ -140,13 +140,15 @@ export class UserController {
         return this.userService.registerAdmin(body);
     }
 
-    @Put('/register-class/:userId')
+    @Put('/register-class/:username')
     async registerClass(
         @Request() req,
         @Res() res: Response,
         @Body() subjectRegisterDto: SubjectRegisterDto,
     ) {
-        const userId = req.params.userId;
+        const username = req.params.username;
+        const foundUser = await this.userService.findUserByUsername(username);
+        const userId = foundUser._id;
         try {
             const result = await this.userService.registerSubject(
                 userId,

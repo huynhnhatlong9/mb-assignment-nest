@@ -12,13 +12,16 @@ export class PaymentController {
         return await this.paymentService.create(createPaymentDto);
     }
 
-    @Get(':userId/:semesterId')
+    @Get(':username/:semesterId')
     async findOne(
         @Param('semesterId') semesterId: string,
-        @Param('userId') userId: string,
+        @Param('username') username: string,
     ) {
+        const foundUser = await this.paymentService.findUserByUsername(
+            username,
+        );
         return await this.paymentService.getPaymentByUserAndSemester(
-            userId,
+            foundUser._id,
             semesterId,
         );
     }

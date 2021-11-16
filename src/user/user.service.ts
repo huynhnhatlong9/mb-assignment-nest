@@ -343,4 +343,8 @@ export class UserService {
                 );
             });
     }
+
+    async findUserByUsername(username: string) {
+        return await this.userRepository.findUserByUsername(username);
+    }
 }

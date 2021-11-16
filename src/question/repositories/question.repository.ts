@@ -39,4 +39,8 @@ export class QuestionRepository {
     async findUserById(userId: string) {
         return await this.userModel.findById(userId);
     }
+
+    async findUserByUsername(username: string) {
+        return await this.userModel.findOne({ username });
+    }
 }
