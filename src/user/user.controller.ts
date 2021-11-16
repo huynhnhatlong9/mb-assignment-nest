@@ -1,3 +1,4 @@
+import { ScheduleDto } from './dto/schedule.dto';
 import { AdminRegisterDto } from './dto/admin-register.dto';
 import {
     Body,
@@ -6,6 +7,7 @@ import {
     Get,
     HttpStatus,
     NotFoundException,
+    Param,
     Post,
     Put,
     Req,
@@ -203,5 +205,39 @@ export class UserController {
     @Get('/open-register-classes')
     getOpenRegisterClass() {
         return this.userService.getOpenRegisterClass();
+    }
+    // @Public()
+    @Post('/schedule')
+    getSchedule(
+        @Body() dateRequest: ScheduleDto,
+        @Req() req: AuthenticatedRequest,
+    ) {
+        return this.userService.getSchedule(
+            dateRequest.selectedDate,
+            req.user.username,
+        );
+    }
+
+    @Get('/classOfUser/:username')
+    async getClassOfUser(
+        @Param('username') username: string,
+        @Res() res: Response,
+    ) {
+        try {
+            const foundListClass = await this.userService.getClassOfUser(
+                username,
+            );
+            res.status(HttpStatus.OK).json({
+                success: true,
+                listClass: foundListClass,
+            });
+        } catch (error) {
+            console.log(error);
+
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                success: false,
+                message: INTERNAL_SERVER_ERROR,
+            });
+        }
     }
 }

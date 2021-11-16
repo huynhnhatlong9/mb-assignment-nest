@@ -16,7 +16,7 @@ import { RegisterDto } from '../dto/register.dto';
 import { UpdateProfileDto } from '../dto/update.dto';
 import { PersonalInformationEntity } from '../entities/personal-information.entity';
 import { SubjectClassModel } from 'src/database/model/subject-class.model';
-import { SemesterModel } from 'src/database/model/semester.model';
+import { Semester, SemesterModel } from 'src/database/model/semester.model';
 import { SubjectModel } from 'src/database/model/subject.model';
 import { ClassOfStudentModel } from 'src/database/model/classofstudent.model';
 import { RegisterSubjectModel } from 'src/database/model/registersubject.model';
@@ -200,7 +200,6 @@ export class UserRepository {
                             $project: {
                                 semester: 1,
                                 _id: 1,
-                                subject_detail: 1,
                                 midExamSchedule: 1,
                                 finalExamSchedule: 1,
                                 subjectDetail: 1,
@@ -287,8 +286,104 @@ export class UserRepository {
             ])
             .exec();
     }
-    getSchedule(selectedDate: Date) {}
-
+    async getSchedule(selectedDate: Date, userName: string) {
+        try {
+            const listSemester = await this.semesterModel.find(
+                {
+                    startTime: { $lte: selectedDate },
+                    endTime: { $gte: selectedDate },
+                },
+                { _id: 1 },
+            );
+            if (!listSemester) {
+                throw CustomThrowException(
+                    ' There are no semesters within the time you have selected ',
+                    HttpStatus.BAD_REQUEST,
+                );
+            }
+            // console.log(listSemester);
+            // console.log(await this.classOfStudentModel.find({studentId: "618a8f6452c44b2ac487b775"}))
+            const userAndClass = await this.userModel
+                .aggregate([
+                    {
+                        $lookup: {
+                            from: 'classOfStudent',
+                            localField: '_id',
+                            foreignField: 'studentId',
+                            as: 'classOfUser',
+                        },
+                    },
+                    {
+                        $project: {
+                            username: 1,
+                            _id: 1,
+                            classOfUser: 1,
+                        },
+                    },
+                    {
+                        $match: {
+                            username: userName,
+                        },
+                    },
+                ])
+                .exec();
+            const sDate = new Date(selectedDate);
+            const dateStartYear = new Date('1/1/' + sDate.getFullYear());
+            let diffDays = Math.floor(
+                (sDate.valueOf() - dateStartYear.valueOf()) / (1000 * 60 * 60 * 24),
+            );
+            if (dateStartYear.getDay() === 0) {
+                diffDays = diffDays - 1;
+            } else {
+                diffDays = diffDays - 7 + dateStartYear.getDay();
+            }
+            const week = Math.floor(diffDays / 7) + (sDate.getDay() ? 1 : 0);
+            const listClassPromise = [];
+            userAndClass[0].classOfUser[0].listClass.forEach((element) => {
+                listClassPromise.push(
+                    this.subjectClassModel.aggregate([
+                        {
+                            $lookup: {
+                                from: 'subjects',
+                                localField: 'subject',
+                                foreignField: '_id',
+                                as: 'subjectDetail',
+                            },
+                        },
+                        {
+                            $project: {
+                                semester: 1,
+                                _id: 1,
+                                period: 1,
+                                room: 1,
+                                subjectDetail: 1,
+                                weekStudy: 1,
+                            },
+                        },
+                        {
+                            $match: {
+                                semester: {
+                                    $in: listSemester.map(
+                                        ele => Types.ObjectId(ele._id),
+                                    ),
+                                },
+                                _id: element,
+                                weekStudy: { $elemMatch: { $eq: week } },
+                            },
+                        },
+                    ]),
+                );
+            });
+            const resultSChedule = await Promise.all(listClassPromise);
+            return resultSChedule;
+        } catch (err) {
+            console.log(err);
+            throw CustomThrowException(
+                err.message,
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
     async findClassByClassId(classId: string) {
         return await this.subjectClassModel.findById(classId);
     }

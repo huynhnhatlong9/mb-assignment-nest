@@ -43,8 +43,14 @@ const SubjectClassSchema = new Schema<SubjectClass>({
     minStudent: Number,
     listStudent: [Number],
     numOfStudent: Number,
-    midExamSchedule: Date,
-    finalExamSchedule: Date,
+    midExamSchedule: {
+        time: SchemaTypes.Date,
+        address: SchemaTypes.String,
+    },
+    finalExamSchedule: {
+        time: SchemaTypes.Date,
+        address: SchemaTypes.String,
+    },
     status: Number,
 });
 

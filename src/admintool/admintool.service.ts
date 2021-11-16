@@ -134,9 +134,9 @@ export class AdminToolService {
                     },
                 });
             })
-            .catch(() => {
+            .catch((err) => {
                 throw CustomThrowException(
-                    'Create class of subject subject failed',
+                    err.message,
                     HttpStatus.INTERNAL_SERVER_ERROR,
                 );
             });
