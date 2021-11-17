@@ -10,7 +10,7 @@ export class PaymentService {
     constructor(private paymentRepository: PaymentRepository) {}
 
     async create(createPaymentDto: CreatePaymentDto) {
-        return await this.paymentRepository.createNewQuestion(createPaymentDto);
+        return await this.paymentRepository.createNewPayment(createPaymentDto);
     }
 
     async findBySemesterId(id: string) {
@@ -25,18 +25,24 @@ export class PaymentService {
         );
     }
 
-    async getClassBySemesterOfStudent(studentId: string, semesterId: string) {
+    async getClassBySemesterOfStudent(studentId: string, semesterId: any) {
         const foundListClassId =
             await this.paymentRepository.findClassByStudentId(studentId);
         let foundClass = [];
         let idx = 0;
+        let classObj = null;
         for (const classId of foundListClassId.listClass) {
-            let classObj = await this.paymentRepository.findClassById(classId);
-            if (classObj.semester == semesterId) {
+            classObj = await this.paymentRepository.findClassById(classId);
+            const tmp = classObj.semester;
+            console.log(semesterId.toString());
+            console.log(typeof semesterId);
+            if (tmp == semesterId.toString()) {
+                console.log(classObj.semester, semesterId);
                 foundClass[idx] = classObj;
                 idx++;
             }
         }
+        console.log(foundClass);
         return Promise.resolve(foundClass);
     }
 
@@ -66,13 +72,16 @@ export class PaymentService {
             semesterId,
         );
 
+        const foundSemester =
+            await this.paymentRepository.findSemesterBySemesterId(semesterId);
+
         if (!foundPayment) {
             foundPayment = await this.create({
                 semester: semesterId,
                 studentId: userId,
                 cost: null,
                 timePaid: null,
-                deadline: [],
+                deadline: [foundSemester.startTime, foundSemester.endTime],
             });
         }
 
@@ -86,5 +95,19 @@ export class PaymentService {
 
     async findUserByUsername(username: string) {
         return this.paymentRepository.findUserByUsername(username);
+    }
+
+    async findPaymentByUserId(userId: string) {
+        let payments = [];
+        let idx = 0;
+        const semesters = await this.paymentRepository.findAllSemester();
+        for (const semester of semesters) {
+            payments[idx] = await this.getPaymentByUserAndSemester(
+                userId,
+                semester._id,
+            );
+            idx += 1;
+        }
+        return Promise.resolve(payments);
     }
 }
