@@ -34,6 +34,7 @@ import { RolesType } from 'src/shared/roles-type.enum';
 import { SubjectRegisterDto } from './dto/subject-register.dto';
 import { INTERNAL_SERVER_ERROR } from 'src/common/constants/status-message.const';
 import { ExamScheduleDto } from './dto/exam-schedule.dto';
+import { SearchSubjectDto } from './dto/searchsubject.dto';
 
 @ApiBearerAuth()
 @Controller({ path: 'user' })
@@ -239,5 +240,17 @@ export class UserController {
                 message: INTERNAL_SERVER_ERROR,
             });
         }
+    }
+    @Get('/score-student')
+    getScoreOfStudent(@Req() req: AuthenticatedRequest) {
+        return this.userService.getScore(req.user.username);
+    }
+    @Get('/score-studen/avg')
+    getAVGScore(@Req() req: AuthenticatedRequest) {
+        return this.userService.getAVGScore(req.user.username);
+    }
+    @Post('/search-subject')
+    searchSubjecClass(@Body() keyword: SearchSubjectDto){
+        return this.userService.searchSubjectClassWithKeyword(keyword.keyword);
     }
 }

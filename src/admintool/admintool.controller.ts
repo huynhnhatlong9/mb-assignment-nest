@@ -1,3 +1,4 @@
+import { CloseClassDto } from './dto/closeclass.dto';
 import {
     BadRequestException,
     Body,
@@ -19,6 +20,7 @@ import { AdminToolService } from './admintool.service';
 import { CreateClassDto } from './dto/createClass.dto';
 import { CreateLectureDto } from './dto/CreateLecture.dto';
 import { CreateSubjectDto } from './dto/CreateSubject.dto';
+import { InsertScoreOfStudentDto } from './dto/scoreofstudent.dto';
 import { CreateSemesterDto } from './dto/semester.dto';
 @ApiBearerAuth()
 // @UseGuards(RolesGuard)
@@ -80,5 +82,20 @@ export class AdminToolController {
     @Get('/semester')
     findAllSemester() {
         return this.adminService.findAllSemester();
+    }
+    @Public()
+    @Post('/score')
+    insertScoreOfStudent(@Body() score: InsertScoreOfStudentDto) {
+        return this.adminService.insertScoreOfStudent(score);
+    }
+    @Public()
+    @Get('/all-classOfStudent')
+    getAllClassOfStudent() {
+        return this.adminService.getAllClassOfStudent();
+    }
+    @Public()
+    @Post('/close-class')
+    closeClass(@Body() listClass: CloseClassDto) {
+        return this.adminService.closeClass(listClass.listClass);
     }
 }

@@ -378,4 +378,40 @@ export class UserService {
         );
         return await this.findClassOpen(listClass);
     }
+    async getScore(username: string) {
+        try {
+            const result = await this.userRepository.getScoreOfStudent(
+                username,
+            );
+            return new CustomResponse({
+                statusCode: HttpStatus.OK,
+                result: {
+                    data: result,
+                    message: 'get score successfully',
+                },
+                success: true,
+            });
+        } catch (err) {
+            throw CustomThrowException(
+                err.message,
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+    async getAVGScore(username: string) {
+        const scoreAVG = await this.userRepository.getAVGScore(username);
+        return new CustomResponse({
+            statusCode: HttpStatus.OK,
+            success: true,
+            result: scoreAVG,
+        });
+    }
+    async searchSubjectClassWithKeyword(keyword: string) {
+        const subjectClass = await this.userRepository.searchSubjectClassWithKeyWord(keyword);
+        return new CustomResponse({
+            statusCode: HttpStatus.OK,
+            success: true,
+            result: subjectClass,
+        });
+    }
 }

@@ -1,12 +1,16 @@
+import { ClassOfStudentModel } from 'src/database/model/classofstudent.model';
+import { InsertScoreOfStudentDto } from './dto/scoreofstudent.dto';
 import { CreateClassDto } from './dto/createClass.dto';
 import { SEMESTER_MODEL } from './../database/database.constants';
 import { CreateRegisterSubjectDto } from './dto/createRegisterSubject.dto';
-import { Inject, Injectable, HttpStatus } from '@nestjs/common';
+import { Inject, Injectable, HttpStatus, Catch } from '@nestjs/common';
 import {
     LECTURER_MODEL,
     SUBJECT_MODEL,
     REGISTERSUBJECT_MODEL,
     SUBJECT_CLASS_MODEL,
+    SUBJECT_SCORE_MODEL,
+    CLASSOFSTUDENT_MODEL,
 } from '../database/database.constants';
 import { LecturerModel } from '../database/model/lecturer.model';
 import { Subject, SubjectModel } from '../database/model/subject.model';
@@ -19,6 +23,9 @@ import { CustomThrowException } from 'src/common/exceptions/customThrowException
 import { SemesterModel } from 'src/database/model/semester.model';
 import { CreateSemesterDto } from './dto/semester.dto';
 import { SubjectClassModel } from 'src/database/model/subject-class.model';
+import { SubjectScoreModel } from 'src/database/model/subject-score.model';
+import { Types } from 'mongoose';
+
 @Injectable()
 export class AdminToolService {
     constructor(
@@ -29,6 +36,10 @@ export class AdminToolService {
         @Inject(SEMESTER_MODEL) private semesterModel: SemesterModel,
         @Inject(SUBJECT_CLASS_MODEL)
         private subjectClassModel: SubjectClassModel,
+        @Inject(SUBJECT_SCORE_MODEL)
+        private subjectScoreModel: SubjectScoreModel,
+        @Inject(CLASSOFSTUDENT_MODEL)
+        private classOfStudentModel: ClassOfStudentModel,
     ) {}
 
     createLecture(lecture: CreateLectureDto): Observable<any> {
@@ -140,5 +151,72 @@ export class AdminToolService {
                     HttpStatus.INTERNAL_SERVER_ERROR,
                 );
             });
+    }
+    async insertScoreOfStudent(score: InsertScoreOfStudentDto) {
+        try {
+            const checkClass = await this.classOfStudentModel.find({
+                studentId: score.user,
+                listClass: { $elemMatch: { $eq: score.subjectClass } },
+            });
+            if (checkClass.length === 0) {
+                CustomThrowException(
+                    'userId or ClassId incorrect',
+                    HttpStatus.BAD_REQUEST,
+                );
+            }
+            const checkSore = await this.subjectScoreModel.find({
+                user: score.user,
+                subjectClass: score.subjectClass,
+            });
+            if (checkSore.length !== 0) {
+                CustomThrowException(
+                    'Score subject of user was updated before ',
+                    HttpStatus.BAD_REQUEST,
+                );
+            }
+            const scoreObject = await this.subjectScoreModel.create(score);
+            return new CustomResponse({
+                success: true,
+                statusCode: HttpStatus.OK,
+                result: {
+                    data: scoreObject,
+                    message: 'Insert score for student successfully',
+                },
+            });
+        } catch (err) {
+            throw CustomThrowException(
+                err.message,
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+    getAllClassOfStudent() {
+        return this.classOfStudentModel.find();
+    }
+    async  closeClass(listClass: Array<string>) {
+        const listPromise = [];
+        listClass.forEach((element) => {
+            listPromise.push(
+                this.subjectClassModel.updateOne(
+                    {
+                        _id: Types.ObjectId(element),
+                    },
+                    { $set: { status: 0 } },
+                ),
+            );
+        });
+        try {
+            const result = await  Promise.all(listPromise);
+            return new CustomResponse({
+                success: true,
+                statusCode: HttpStatus.OK,
+                result: result,
+            });
+        } catch (err) {
+            throw CustomThrowException(
+                err.message,
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
     }
 }
