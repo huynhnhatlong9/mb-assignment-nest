@@ -184,6 +184,13 @@ export class UserRepository {
                 .find({ studentId: resultId._id }, { listClass: 1 })
                 .exec();
             console.log(listClass);
+            if (!listClass) {
+                return new CustomResponse({
+                    statusCode: HttpStatus.OK,
+                    success: true,
+                    result: [],
+                });
+            }
             const getListExamPromise = [];
             listClass[0].listClass.forEach(async (element) => {
                 getListExamPromise.push(
@@ -330,7 +337,7 @@ export class UserRepository {
             const sDate = new Date(selectedDate);
             const dateStartYear = new Date('1/1/' + sDate.getFullYear());
             let diffDays = Math.floor(
-                (sDate.valueOf() - dateStartYear.valueOf()) / (1000 * 60 * 60 * 24),
+                (sDate.valueOf() - dateStartYear.valueOf()) /(1000 * 60 * 60 * 24),
             );
             if (dateStartYear.getDay() === 0) {
                 diffDays = diffDays - 1;
@@ -339,6 +346,13 @@ export class UserRepository {
             }
             const week = Math.floor(diffDays / 7) + (sDate.getDay() ? 1 : 0);
             const listClassPromise = [];
+            if (!userAndClass[0].classOfUser[0]) {
+                return new CustomResponse({
+                    statusCode: HttpStatus.OK,
+                    success: true,
+                    result: [],
+                });
+            }
             userAndClass[0].classOfUser[0].listClass.forEach((element) => {
                 listClassPromise.push(
                     this.subjectClassModel.aggregate([
@@ -375,7 +389,11 @@ export class UserRepository {
                 );
             });
             const resultSChedule = await Promise.all(listClassPromise);
-            return resultSChedule;
+            return new CustomResponse({
+                statusCode: HttpStatus.OK,
+                success: true,
+                result: resultSChedule,
+            });
         } catch (err) {
             console.log(err);
             throw CustomThrowException(
