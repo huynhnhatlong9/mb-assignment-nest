@@ -349,7 +349,24 @@ export class UserService {
     }
 
     getSchedule(selectedDate: Date, userName: string) {
-        return this.userRepository.getSchedule(selectedDate, userName);
+        return this.userRepository
+            .getSchedule(selectedDate, userName)
+            .then((result) => {
+                return new CustomResponse({
+                    success: true,
+                    statusCode: HttpStatus.OK,
+                    result: {
+                        data: result,
+                        message: 'Get schedule successfully',
+                    },
+                });
+            })
+            .catch(() => {
+                throw CustomThrowException(
+                    'Get schedule failed',
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                );
+            });
     }
 
     async getClassOfUser(username: string) {
