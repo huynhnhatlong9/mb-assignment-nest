@@ -7,6 +7,7 @@ import {
     Get,
     HttpStatus,
     NotFoundException,
+    Param,
     Post,
     Put,
     Req,
@@ -141,13 +142,15 @@ export class UserController {
         return this.userService.registerAdmin(body);
     }
 
-    @Put('/register-class/:userId')
+    @Put('/register-class/:username')
     async registerClass(
         @Request() req,
         @Res() res: Response,
         @Body() subjectRegisterDto: SubjectRegisterDto,
     ) {
-        const userId = req.params.userId;
+        const username = req.params.username;
+        const foundUser = await this.userService.findUserByUsername(username);
+        const userId = foundUser._id;
         try {
             const result = await this.userService.registerSubject(
                 userId,
@@ -213,5 +216,28 @@ export class UserController {
             dateRequest.selectedDate,
             req.user.username,
         );
+    }
+
+    @Get('/classOfUser/:username')
+    async getClassOfUser(
+        @Param('username') username: string,
+        @Res() res: Response,
+    ) {
+        try {
+            const foundListClass = await this.userService.getClassOfUser(
+                username,
+            );
+            res.status(HttpStatus.OK).json({
+                success: true,
+                listClass: foundListClass,
+            });
+        } catch (error) {
+            console.log(error);
+
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                success: false,
+                message: INTERNAL_SERVER_ERROR,
+            });
+        }
     }
 }

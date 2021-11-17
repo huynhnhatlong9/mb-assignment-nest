@@ -343,7 +343,22 @@ export class UserService {
                 );
             });
     }
+
+    async findUserByUsername(username: string) {
+        return await this.userRepository.findUserByUsername(username);
+    }
+
     getSchedule(selectedDate: Date, userName: string) {
         return this.userRepository.getSchedule(selectedDate, userName);
+    }
+
+    async getClassOfUser(username: string) {
+        const foundUser = await this.findUserByUsername(username);
+        const foundClassOfUser =
+            await this.userRepository.findClassOfIdByUserId(foundUser._id);
+        const listClass = await this.userRepository.findAllClassOfListClassId(
+            foundClassOfUser.listClass,
+        );
+        return await this.findClassOpen(listClass);
     }
 }

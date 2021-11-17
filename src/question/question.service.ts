@@ -13,4 +13,8 @@ export class QuestionService {
             createQuestionDto,
         );
     }
+
+    async findUserByUsername(username: string) {
+        return await this.questionRepository.findUserByUsername(username);
+    }
 }

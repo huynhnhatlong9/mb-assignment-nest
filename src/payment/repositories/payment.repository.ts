@@ -4,11 +4,13 @@ import {
     PAYMENT_MODEL,
     SUBJECT_CLASS_MODEL,
     SUBJECT_MODEL,
+    USER_MODEL,
 } from 'src/database/database.constants';
 import { ClassOfStudentModel } from 'src/database/model/classofstudent.model';
 import { PaymentModel } from 'src/database/model/payment';
 import { SubjectClassModel } from 'src/database/model/subject-class.model';
 import { SubjectModel } from 'src/database/model/subject.model';
+import { UserModel } from 'src/database/model/user.model';
 import { CreatePaymentDto } from '../dto/create-payment.dto';
 import { UpdatePaymentDto } from '../dto/update-payment.dto';
 
@@ -21,6 +23,7 @@ export class PaymentRepository {
         @Inject(SUBJECT_CLASS_MODEL)
         private subjectClassModel: SubjectClassModel,
         @Inject(SUBJECT_MODEL) private subjectModel: SubjectModel,
+        @Inject(USER_MODEL) private userModel: UserModel,
     ) {}
 
     async createNewQuestion(createPayment: CreatePaymentDto) {
@@ -70,5 +73,9 @@ export class PaymentRepository {
 
     async findPaymentByUserId(studentId: string) {
         return await this.paymentModel.findOne({ studentId });
+    }
+
+    async findUserByUsername(username: string) {
+        return await this.userModel.findOne({ username });
     }
 }
