@@ -159,6 +159,25 @@ export class CurriculumController {
         }
     }
 
+    @Get('get-all')
+    async getAllCurriculums(@Response() res) {
+        try {
+            const curriculums =
+                await this.curriculumService.getAllCurriculums();
+            return res.status(HttpStatus.OK).json({
+                success: true,
+                curriculums,
+            });
+        } catch (error) {
+            console.log(error);
+
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                success: false,
+                message: INTERNAL_SERVER_ERROR,
+            });
+        }
+    }
+
     @Get(':id')
     async findOne(
         @Param('id') id: string,
