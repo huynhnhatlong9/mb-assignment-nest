@@ -195,35 +195,36 @@ export class UserRepository {
                 return [];
             }
             const getListExamPromise = [];
-            listClass[0].listClass.forEach(async (element) => {
-                getListExamPromise.push(
-                    this.subjectClassModel.aggregate([
-                        {
-                            $lookup: {
-                                from: 'subjects',
-                                localField: 'subject',
-                                foreignField: '_id',
-                                as: 'subjectDetail',
+            if (!listClass)
+                listClass[0].listClass.forEach(async (element) => {
+                    getListExamPromise.push(
+                        this.subjectClassModel.aggregate([
+                            {
+                                $lookup: {
+                                    from: 'subjects',
+                                    localField: 'subject',
+                                    foreignField: '_id',
+                                    as: 'subjectDetail',
+                                },
                             },
-                        },
-                        {
-                            $project: {
-                                semester: 1,
-                                _id: 1,
-                                midExamSchedule: 1,
-                                finalExamSchedule: 1,
-                                subjectDetail: 1,
+                            {
+                                $project: {
+                                    semester: 1,
+                                    _id: 1,
+                                    midExamSchedule: 1,
+                                    finalExamSchedule: 1,
+                                    subjectDetail: 1,
+                                },
                             },
-                        },
-                        {
-                            $match: {
-                                semester: Types.ObjectId(semester),
-                                _id: element,
+                            {
+                                $match: {
+                                    semester: Types.ObjectId(semester),
+                                    _id: element,
+                                },
                             },
-                        },
-                    ]),
-                );
-            });
+                        ]),
+                    );
+                });
             const listExam = await Promise.all(getListExamPromise);
             return listExam;
         } catch (err) {
@@ -336,7 +337,8 @@ export class UserRepository {
             const sDate = new Date(selectedDate);
             const dateStartYear = new Date('1/1/' + sDate.getFullYear());
             let diffDays = Math.floor(
-                (sDate.valueOf() - dateStartYear.valueOf()) /(1000 * 60 * 60 * 24),
+                (sDate.valueOf() - dateStartYear.valueOf()) /
+                    (1000 * 60 * 60 * 24),
             );
             if (dateStartYear.getDay() === 0) {
                 diffDays = diffDays - 1;
@@ -372,8 +374,8 @@ export class UserRepository {
                         {
                             $match: {
                                 semester: {
-                                    $in: listSemester.map(
-                                        ele => Types.ObjectId(ele._id),
+                                    $in: listSemester.map((ele) =>
+                                        Types.ObjectId(ele._id),
                                     ),
                                 },
                                 _id: element,

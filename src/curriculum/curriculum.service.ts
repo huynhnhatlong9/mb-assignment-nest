@@ -55,4 +55,8 @@ export class CurriculumService {
     async getCurriculumByTypes(types: string) {
         return await this.curriculumRepository.getCurriculumsByTypes(types);
     }
+
+    async getAllCurriculums() {
+        return await this.curriculumRepository.getAllCurriculums();
+    }
 }
