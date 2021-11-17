@@ -34,8 +34,6 @@ export class PaymentService {
         for (const classId of foundListClassId.listClass) {
             classObj = await this.paymentRepository.findClassById(classId);
             const tmp = classObj.semester;
-            console.log(semesterId.toString());
-            console.log(typeof semesterId);
             if (tmp == semesterId.toString()) {
                 console.log(classObj.semester, semesterId);
                 foundClass[idx] = classObj;

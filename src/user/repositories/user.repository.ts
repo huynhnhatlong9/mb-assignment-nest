@@ -195,7 +195,7 @@ export class UserRepository {
                 return [];
             }
             const getListExamPromise = [];
-            if (!listClass)
+            if (listClass)
                 listClass[0].listClass.forEach(async (element) => {
                     getListExamPromise.push(
                         this.subjectClassModel.aggregate([
