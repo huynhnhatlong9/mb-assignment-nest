@@ -1,7 +1,16 @@
-import { AdminRegisterDto } from './../dto/admin-register.dto';
-import { AcademicInformationEntity } from './../entities/academic-information.entity';
-import { PersonalInformationDto } from './../dto/personal-information.dto';
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+    HttpStatus,
+    Inject,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
+import { Types } from 'mongoose';
+import { EMPTY, from, mergeMap, Observable, of, throwIfEmpty } from 'rxjs';
+import { ClassOfStudentModel } from 'src/database/model/classofstudent.model';
+import { RegisterSubjectModel } from 'src/database/model/registersubject.model';
+import { SemesterModel } from 'src/database/model/semester.model';
+import { SubjectClassModel } from 'src/database/model/subject-class.model';
+import { SubjectModel } from 'src/database/model/subject.model';
 import {
     CLASSOFSTUDENT_MODEL,
     REGISTERSUBJECT_MODEL,
@@ -11,19 +20,13 @@ import {
     USER_MODEL,
 } from '../../database/database.constants';
 import { User, UserModel } from '../../database/model/user.model';
-import { EMPTY, from, mergeMap, Observable, of, throwIfEmpty } from 'rxjs';
 import { RegisterDto } from '../dto/register.dto';
 import { UpdateProfileDto } from '../dto/update.dto';
 import { PersonalInformationEntity } from '../entities/personal-information.entity';
-import { SubjectClassModel } from 'src/database/model/subject-class.model';
-import { Semester, SemesterModel } from 'src/database/model/semester.model';
-import { SubjectModel } from 'src/database/model/subject.model';
-import { ClassOfStudentModel } from 'src/database/model/classofstudent.model';
-import { RegisterSubjectModel } from 'src/database/model/registersubject.model';
-import { CustomResponse } from './../../common/models/customresponse';
 import { CustomThrowException } from './../../common/exceptions/customThrowException';
-import { HttpStatus } from '@nestjs/common';
-import { Types } from 'mongoose';
+import { AdminRegisterDto } from './../dto/admin-register.dto';
+import { PersonalInformationDto } from './../dto/personal-information.dto';
+import { AcademicInformationEntity } from './../entities/academic-information.entity';
 
 @Injectable()
 export class UserRepository {
@@ -184,6 +187,9 @@ export class UserRepository {
                 .find({ studentId: resultId._id }, { listClass: 1 })
                 .exec();
             console.log(listClass);
+            if (!listClass) {
+                return [];
+            }
             const getListExamPromise = [];
             if (!listClass)
                 listClass[0].listClass.forEach(async (element) => {
@@ -216,11 +222,7 @@ export class UserRepository {
                     );
                 });
             const listExam = await Promise.all(getListExamPromise);
-            return new CustomResponse({
-                statusCode: HttpStatus.OK,
-                success: true,
-                result: listExam,
-            });
+            return listExam;
         } catch (err) {
             throw CustomThrowException(
                 err.message,
@@ -341,6 +343,9 @@ export class UserRepository {
             }
             const week = Math.floor(diffDays / 7) + (sDate.getDay() ? 1 : 0);
             const listClassPromise = [];
+            if (!userAndClass[0].classOfUser[0]) {
+                return [];
+            }
             userAndClass[0].classOfUser[0].listClass.forEach((element) => {
                 listClassPromise.push(
                     this.subjectClassModel.aggregate([
