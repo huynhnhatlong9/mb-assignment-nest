@@ -3,7 +3,8 @@ import { Document, Model, Schema, SchemaTypes } from 'mongoose';
 interface SubjectScore extends Document {
     user: string;
     subjectClass: string;
-    score: Array<number>;
+    score: Array<any>;
+    total: number;
 }
 
 type SubjectScoreModel = Model<SubjectScore>;
@@ -17,7 +18,16 @@ const SubjectScoreSchema = new Schema<SubjectScore>({
         type: SchemaTypes.ObjectId,
         ref: 'SubjectClass',
     },
-    score: [SchemaTypes.Number],
+    score: {
+        type: [
+            {
+                type: { type: SchemaTypes.String },
+                score: { type: SchemaTypes.Number },
+                rate: { type: SchemaTypes.Number },
+            },
+        ],
+    },
+    total: SchemaTypes.Number,
 });
 
 export { SubjectScore, SubjectScoreSchema, SubjectScoreModel };

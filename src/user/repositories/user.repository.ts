@@ -1,3 +1,5 @@
+import { SubjectScoreModel } from 'src/database/model/subject-score.model';
+import { SUBJECT_SCORE_MODEL } from './../../database/database.constants';
 import {
     HttpStatus,
     Inject,
@@ -40,6 +42,8 @@ export class UserRepository {
         private classOfStudentModel: ClassOfStudentModel,
         @Inject(REGISTERSUBJECT_MODEL)
         private registerSubject: RegisterSubjectModel,
+        @Inject(SUBJECT_SCORE_MODEL)
+        private scoreModel: SubjectScoreModel,
     ) {}
 
     findUserByName(username: string): Observable<User> {
@@ -187,7 +191,7 @@ export class UserRepository {
                 .find({ studentId: resultId._id }, { listClass: 1 })
                 .exec();
             console.log(listClass);
-            if (!listClass) {
+            if (listClass.length === 0) {
                 return [];
             }
             const getListExamPromise = [];
@@ -298,7 +302,7 @@ export class UserRepository {
                 },
                 { _id: 1 },
             );
-            if (!listSemester) {
+            if (listSemester.length === 0) {
                 throw CustomThrowException(
                     ' There are no semesters within the time you have selected ',
                     HttpStatus.BAD_REQUEST,
@@ -343,7 +347,7 @@ export class UserRepository {
             }
             const week = Math.floor(diffDays / 7) + (sDate.getDay() ? 1 : 0);
             const listClassPromise = [];
-            if (!userAndClass[0].classOfUser[0]) {
+            if (userAndClass[0].classOfUser[0].length === 0) {
                 return [];
             }
             userAndClass[0].classOfUser[0].listClass.forEach((element) => {
@@ -397,5 +401,116 @@ export class UserRepository {
 
     async findUserByUsername(username: string) {
         return await this.userModel.findOne({ username });
+    }
+    async getScoreOfStudent(username: string) {
+        try {
+            const userId = await this.userModel.find(
+                { username: username },
+                { _id: 1 },
+            );
+            if (userId.length === 0) {
+                throw CustomThrowException('Not student', HttpStatus.NOT_FOUND);
+            }
+            const score = await this.scoreModel.aggregate([
+                {
+                    $lookup: {
+                        from: 'subject_classes',
+                        localField: 'subjectClass',
+                        foreignField: '_id',
+                        as: 'subjectClassInfo',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'subjects',
+                        localField: 'subjectClassInfo.subject',
+                        foreignField: '_id',
+                        as: 'subject',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'semesters',
+                        localField: 'subjectClassInfo.semester',
+                        foreignField: '_id',
+                        as: 'semester',
+                    },
+                },
+                {
+                    $project: {
+                        user: 1,
+                        subjectClassInfo: { _id: 1, subject: 1, semester: 1 },
+                        subject: { _id: 1, name: 1, credit: 1 },
+                        score: 1,
+                        total: 1,
+                        semester: { _id: 1, name: 1 },
+                    },
+                },
+                {
+                    $match: {
+                        user: (userId[0] as any)._id,
+                    },
+                },
+            ]);
+            return score;
+        } catch (err) {
+            throw CustomThrowException(
+                err.message,
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+    async getAVGScore(username: string) {
+        try {
+            const scoreOfStudent = await this.getScoreOfStudent(username);
+            if (scoreOfStudent.length === 0) {
+                return null;
+            }
+            // console.log(scoreOfStudent);
+            let tinchi = 0;
+            let totalScore = 0;
+            scoreOfStudent.forEach((element) => {
+                totalScore += element.total * element.subject[0].credit;
+                tinchi += element.subject[0].credit;
+            });
+            // console.log(`${totalScore} ${tinchi}`);
+            return totalScore / tinchi;
+        } catch (err) {
+            throw CustomThrowException(
+                err.message,
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+    async searchSubjectClassWithKeyWord(keyword: string) {
+        try {
+            const subject = await this.subjectModel.find(
+                { name: { $regex: '.*' + keyword + '.*' } },
+                { _id: 1 },
+            );
+            if (subject.length === 0) {
+                return [];
+            }
+            const subjectId = subject.map((ele) => Types.ObjectId(ele._id));
+            const listClassOfSubject = await this.subjectClassModel.aggregate([
+                {
+                    $lookup: {
+                        from: 'subjects',
+                        localField: 'subject',
+                        foreignField: '_id',
+                        as: 'subjectDetail',
+                    },
+                },
+                {
+                    $match: {
+                        subject: { $in: subjectId },
+                        status: 1,
+                    },
+                },
+            ]);
+            return listClassOfSubject;
+        } catch (err) {
+            CustomThrowException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
