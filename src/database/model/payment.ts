@@ -6,6 +6,7 @@ interface Payment extends Document {
     cost?: number;
     timePaid?: Date;
     deadline?: [Date, Date];
+    semesterName?: string;
 }
 
 type PaymentModel = Model<Payment>;
@@ -26,6 +27,8 @@ const PaymentSchema = new Schema({
     timePaid: Date,
 
     deadline: [Date, Date],
+
+    semesterName: String,
 });
 
 export { Payment, PaymentModel, PaymentSchema };

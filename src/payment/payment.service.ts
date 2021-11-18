@@ -25,6 +25,23 @@ export class PaymentService {
         );
     }
 
+    async makePayments(ids: any[]) {
+        let payments = [];
+        let idx = 0;
+        let payment = null;
+        for (idx = 0; idx < ids.length; idx += 1) {
+            const updateCondition = { _id: ids[idx] };
+            payment = await this.paymentRepository.makePayment(
+                updateCondition,
+                {
+                    timePaid: new Date(),
+                },
+            );
+            payments[idx] = payment;
+        }
+        return Promise.resolve(payments);
+    }
+
     async getClassBySemesterOfStudent(studentId: string, semesterId: any) {
         const foundListClassId =
             await this.paymentRepository.findClassByStudentId(studentId);
@@ -40,11 +57,14 @@ export class PaymentService {
                 idx++;
             }
         }
-        console.log(foundClass);
         return Promise.resolve(foundClass);
     }
 
-    async updateCost(paymentId: string, listClass: SubjectClass[]) {
+    async updateCost(
+        paymentId: string,
+        listClass: SubjectClass[],
+        semesterName: string,
+    ) {
         let credits = 0;
         let foundSubject = null;
 
@@ -62,10 +82,15 @@ export class PaymentService {
         return await this.paymentRepository.updateCost(
             updateCondition,
             newCost,
+            semesterName,
         );
     }
 
-    async getPaymentByUserAndSemester(userId: string, semesterId: string) {
+    async getPaymentByUserAndSemester(
+        userId: string,
+        semesterId: string,
+        semesterName: string,
+    ) {
         let foundPayment = await this.paymentRepository.getPaymentBySemester(
             semesterId,
         );
@@ -88,7 +113,11 @@ export class PaymentService {
             semesterId,
         );
 
-        return await this.updateCost(foundPayment._id, foundClass);
+        return await this.updateCost(
+            foundPayment._id,
+            foundClass,
+            semesterName,
+        );
     }
 
     async findUserByUsername(username: string) {
@@ -98,14 +127,25 @@ export class PaymentService {
     async findPaymentByUserId(userId: string) {
         let payments = [];
         let idx = 0;
+        let tmp = null;
         const semesters = await this.paymentRepository.findAllSemester();
         for (const semester of semesters) {
-            payments[idx] = await this.getPaymentByUserAndSemester(
+            tmp = await this.getPaymentByUserAndSemester(
                 userId,
                 semester._id,
+                semester.name,
             );
+
+            payments[idx] = tmp;
+
             idx += 1;
         }
         return Promise.resolve(payments);
+    }
+
+    async findSemesterBySemesterId(semesterId: string) {
+        return await this.paymentRepository.findSemesterBySemesterId(
+            semesterId,
+        );
     }
 }

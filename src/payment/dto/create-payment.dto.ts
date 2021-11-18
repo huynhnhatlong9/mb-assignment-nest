@@ -7,5 +7,7 @@ export class CreatePaymentDto {
 
     timePaid?: Date;
 
+    semesterName?: string;
+
     deadline?: [Date, Date] | any[];
 }

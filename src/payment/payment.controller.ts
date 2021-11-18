@@ -60,10 +60,14 @@ export class PaymentController {
             const foundUser = await this.paymentService.findUserByUsername(
                 username,
             );
+
+            const foundSemester =
+                await this.paymentService.findSemesterBySemesterId(semesterId);
             const foundPayment =
                 await this.paymentService.getPaymentByUserAndSemester(
                     foundUser._id,
                     semesterId,
+                    foundSemester.name,
                 );
             return res.status(HttpStatus.OK).json({
                 success: true,
@@ -85,5 +89,25 @@ export class PaymentController {
         @Body() updatePaymentDto: UpdatePaymentDto,
     ) {
         return await this.paymentService.makePayment(id, updatePaymentDto);
+    }
+
+    @Post('make-payment')
+    async makePayment(@Body() listId: { listId: string[] }, @Response() res) {
+        try {
+            const payments = await this.paymentService.makePayments(
+                listId.listId,
+            );
+            res.status(HttpStatus.OK).json({
+                success: true,
+                payments,
+            });
+        } catch (error) {
+            console.log(error);
+
+            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                success: false,
+                message: INTERNAL_SERVER_ERROR,
+            });
+        }
     }
 }

@@ -62,10 +62,11 @@ export class PaymentRepository {
     async updateCost(
         updatePaymentCondition: { _id: string },
         updatedCost: number,
+        semesterName: string,
     ) {
         return await this.paymentModel.findOneAndUpdate(
             updatePaymentCondition,
-            { cost: updatedCost },
+            { cost: updatedCost, semesterName },
             { new: true, useFindAndModify: false },
         );
     }
