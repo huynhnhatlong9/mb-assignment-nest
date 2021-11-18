@@ -88,7 +88,7 @@ export class UserRepository {
         return this.userModel
             .findOne(
                 { username: username },
-                { firstname: 1, lastname: 1, personalinfo: 1 },
+                { firstname: 1, lastname: 1, personalinfo: 1, academicinfo: 1 },
             )
             .exec();
     }
