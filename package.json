@@ -47,7 +47,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@compodoc/compodoc": "^1.1.14",
+    "@compodoc/compodoc": "^1.1.15",
     "@nestjs/cli": "^8.0.0",
     "@nestjs/schematics": "^8.0.0",
     "@nestjs/testing": "^8.0.0",
@@ -89,5 +89,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "engines": {
+    "yarn": "1.x"
   }
 }
